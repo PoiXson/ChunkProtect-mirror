@@ -1,0 +1,7 @@
+name: ${project.name}
+main: com.poixson.chunkprotect.ChunkProtectPlugin
+version: ${project.version}
+api-version: ${spigot-short-version}
+authors: [ lorenzop ]
+website: ${project.url}
+description: ${project.description}
