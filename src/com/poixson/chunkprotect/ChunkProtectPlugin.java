@@ -11,6 +11,10 @@ import com.poixson.chunkprotect.listeners.beacon.BeaconHandler;
 
 public class ChunkProtectPlugin extends JavaPlugin {
 
+	public static final int DEFAULT_SPAWN_RADIUS = 56;
+
+	protected final AtomicReference<FileConfiguration> config = new AtomicReference<FileConfiguration>(null);
+
 	// listeners
 	protected final AtomicReference<BeaconHandler>  beaconHandler  = new AtomicReference<BeaconHandler>(null);
 	protected final AtomicReference<BeaconListener> beaconListener = new AtomicReference<BeaconListener>(null);
@@ -26,6 +30,8 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		// load configs
+		this.loadConfigs();
 		// beacon handler
 		{
 			final BeaconHandler handler = new BeaconHandler(this);
@@ -76,6 +82,43 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		}
 		// stop listeners
 		HandlerList.unregisterAll(this);
+		// save configs
+		this.saveConfigs();
+		this.config.set(null);
+	}
+
+
+
+	// -------------------------------------------------------------------------------
+	// configs
+
+
+
+	protected void loadConfigs() {
+		// plugin dir
+		{
+			final File path = this.getDataFolder();
+			if (!path.isDirectory()) {
+				if (!path.mkdir())
+					throw new RuntimeException("Failed to create directory: " + path.toString());
+				log.info(LOG_PREFIX + "Created directory: " + path.toString());
+			}
+		}
+		// config.yml
+		{
+			final FileConfiguration cfg = this.getConfig();
+			this.config.set(cfg);
+			this.configDefaults(cfg);
+			cfg.options().copyDefaults(true);
+			super.saveConfig();
+		}
+	}
+	protected void saveConfigs() {
+		// config.yml
+		super.saveConfig();
+	}
+	protected void configDefaults(final FileConfiguration cfg) {
+		cfg.addDefault("Spawn Radius", Integer.valueOf(DEFAULT_SPAWN_RADIUS));
 	}
 
 
