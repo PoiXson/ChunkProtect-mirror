@@ -2,6 +2,7 @@ name: ${project.name}
 main: com.poixson.chunkprotect.ChunkProtectPlugin
 version: ${project.version}
 api-version: ${spigot-short-version}
+softdepend: [ Multiverse-Core ]
 authors: [ lorenzop ]
 website: ${project.url}
 description: ${project.description}
