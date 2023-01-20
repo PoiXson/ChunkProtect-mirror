@@ -20,7 +20,6 @@ import com.poixson.chunkprotect.listeners.AreaShape;
 import com.poixson.chunkprotect.listeners.BeaconDAO;
 import com.poixson.chunkprotect.listeners.BeaconHandler;
 import com.poixson.chunkprotect.listeners.BeaconListener;
-import com.poixson.chunkprotect.listeners.BlockPlaceBreakListener;
 import com.poixson.chunkprotect.listeners.ProtectedAreaHandler;
 
 
@@ -46,7 +45,6 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	// listeners
 	protected final AtomicReference<BeaconHandler>  beaconHandler  = new AtomicReference<BeaconHandler>(null);
 	protected final AtomicReference<BeaconListener> beaconListener = new AtomicReference<BeaconListener>(null);
-	protected final AtomicReference<BlockPlaceBreakListener> blockListener = new AtomicReference<BlockPlaceBreakListener>(null);
 	protected final AtomicReference<ProtectedAreaHandler>   protectHandler = new AtomicReference<ProtectedAreaHandler>(null);
 
 
@@ -74,14 +72,6 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		{
 			final BeaconListener listener = new BeaconListener(this);
 			final BeaconListener previous = this.beaconListener.getAndSet(listener);
-			if (previous != null)
-				previous.unregister();
-			listener.register();
-		}
-		// block place/break listener
-		{
-			final BlockPlaceBreakListener listener = new BlockPlaceBreakListener(this);
-			final BlockPlaceBreakListener previous = this.blockListener.getAndSet(listener);
 			if (previous != null)
 				previous.unregister();
 			listener.register();
@@ -132,12 +122,6 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		// beacon listener
 		{
 			final BeaconListener listener = this.beaconListener.getAndSet(null);
-			if (listener != null)
-				listener.unregister();
-		}
-		// block place/break listener
-		{
-			final BlockPlaceBreakListener listener = this.blockListener.getAndSet(null);
 			if (listener != null)
 				listener.unregister();
 		}
