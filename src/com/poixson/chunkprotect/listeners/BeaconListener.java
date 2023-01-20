@@ -36,20 +36,8 @@ public class BeaconListener implements Listener {
 	public void onBeaconChange(final BeaconEvent event) {
 		final BeaconEventType type = event.getType();
 		final BeaconDAO dao = event.getDAO();
-		switch (type) {
-		case ACTIVATED: {
-			this.plugin.addBeaconDAO(dao);
+		if (BeaconEventType.ACTIVATED.equals(type))
 			dao.sendOwnerMessage(ChatColor.AQUA + "This area is now protected");
-			break;
-		}
-		case BROKEN:
-		case DEACTIVATED: this.plugin.removeBeaconDAO(dao.loc); break;
-		case PLACED:            break;
-		case TIER_CHANGED:      break;
-		case PRIMARY_CHANGED:   break;
-		case SECONDARY_CHANGED: break;
-		default: throw new RuntimeException("Unknown beacon event type: " + type.toString());
-		}
 	}
 
 

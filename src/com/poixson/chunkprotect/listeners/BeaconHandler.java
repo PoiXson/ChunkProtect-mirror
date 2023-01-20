@@ -30,7 +30,7 @@ public class BeaconHandler extends BukkitRunnable implements Listener {
 	protected final ChunkProtectPlugin plugin;
 	protected final PluginManager pm;
 
-	protected final HashMap<Location, BeaconDAO> beacons = new HashMap<Location, BeaconDAO>();
+	public final HashMap<Location, BeaconDAO> beacons = new HashMap<Location, BeaconDAO>();
 
 
 
