@@ -7,7 +7,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import com.poixson.chunkprotect.ChunkProtectPlugin;
-import com.poixson.chunkprotect.listeners.beacon.BeaconEvent;
 
 
 public class BeaconListener implements Listener {

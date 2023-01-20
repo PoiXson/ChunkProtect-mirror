@@ -1,4 +1,4 @@
-package com.poixson.chunkprotect.listeners.beacon;
+package com.poixson.chunkprotect.listeners;
 
 
 public enum BeaconEventType {

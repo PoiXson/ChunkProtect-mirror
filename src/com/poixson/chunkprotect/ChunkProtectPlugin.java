@@ -4,9 +4,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.poixson.chunkprotect.listeners.BeaconHandler;
 import com.poixson.chunkprotect.listeners.BeaconListener;
 import com.poixson.chunkprotect.listeners.BlockPlaceBreakListener;
-import com.poixson.chunkprotect.listeners.beacon.BeaconHandler;
 
 
 public class ChunkProtectPlugin extends JavaPlugin {

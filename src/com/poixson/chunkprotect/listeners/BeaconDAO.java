@@ -1,4 +1,4 @@
-package com.poixson.chunkprotect.listeners.beacon;
+package com.poixson.chunkprotect.listeners;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
