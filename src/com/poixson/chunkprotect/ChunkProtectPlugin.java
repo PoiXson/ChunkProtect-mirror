@@ -2,7 +2,6 @@ package com.poixson.chunkprotect;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
@@ -34,8 +33,6 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 2 * 16;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 5 * 16;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 9 * 16;
-
-	protected final HashMap<Location, BeaconDAO> beacons = new HashMap<Location, BeaconDAO>();
 
 	// configs
 	protected final AtomicReference<FileConfiguration> config     = new AtomicReference<FileConfiguration>(null);
@@ -246,20 +243,17 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 
 
-	public void addBeaconDAO(final BeaconDAO dao) {
-		this.beacons.put(dao.loc, dao);
-	}
-	public boolean removeBeaconDAO(final Location loc) {
-		return (this.beacons.remove(loc) != null);
-	}
 	public BeaconDAO getBeaconDAO(final Location loc) {
-		return this.beacons.get(loc);
+		return this.beaconHandler.get()
+				.beacons.get(loc);
 	}
 
 	public BeaconDAO getProtectedArea(final Location loc) {
 		final AreaShape shape = this.getAreaShape();
 		int distance;
-		final Iterator<Entry<Location, BeaconDAO>> it = this.beacons.entrySet().iterator();
+		final Iterator<Entry<Location, BeaconDAO>> it =
+			this.beaconHandler.get()
+				.beacons.entrySet().iterator();
 		while (it.hasNext()) {
 			final Entry<Location, BeaconDAO> entry = it.next();
 			final BeaconDAO dao = entry.getValue();
