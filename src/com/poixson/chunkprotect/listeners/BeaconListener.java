@@ -1,6 +1,7 @@
 package com.poixson.chunkprotect.listeners;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
@@ -33,8 +34,22 @@ public class BeaconListener implements Listener {
 
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void onBeaconChange(final BeaconEvent event) {
-//TODO
-System.out.println(event.getType().toString());
+		final BeaconEventType type = event.getType();
+		final BeaconDAO dao = event.getDAO();
+		switch (type) {
+		case ACTIVATED: {
+			this.plugin.addBeaconDAO(dao);
+			dao.sendOwnerMessage(ChatColor.AQUA + "The area is now protected");
+			break;
+		}
+		case BROKEN:
+		case DEACTIVATED: this.plugin.removeBeaconDAO(dao.loc); break;
+		case PLACED:            break;
+		case TIER_CHANGED:      break;
+		case PRIMARY_CHANGED:   break;
+		case SECONDARY_CHANGED: break;
+		default: throw new RuntimeException("Unknown beacon event type: " + type.toString());
+		}
 	}
 
 

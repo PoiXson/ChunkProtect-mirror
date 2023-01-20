@@ -1,40 +1,48 @@
 package com.poixson.chunkprotect.listeners;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
-import com.poixson.chunkprotect.exceptions.BeaconValidateException;
+import com.poixson.chunkprotect.Utils;
 
 
-public class BeaconDAO {
+public class BeaconDAO implements ConfigurationSerializable {
 
 	public final Location loc;
+	public final UUID owner;
 
-	public int tier = 0;
-	public int tierLast = 0;
+	public           int tier     = 0;
+	public transient int tierLast = 0;
 
 	public PotionEffect primary   = null;
 	public PotionEffect secondary = null;
 
-	public PotionEffect primaryLast   = null;
-	public PotionEffect secondaryLast = null;
+	public transient PotionEffect primaryLast   = null;
+	public transient PotionEffect secondaryLast = null;
 
 
 
-	public BeaconDAO(final Location loc) throws BeaconValidateException {
-		this.loc = loc;
-		this.update();
+	public BeaconDAO(final Location loc, final UUID owner) {
+		this.loc   = loc;
+		this.owner = owner;
 	}
 
 
 
-	public void update() throws BeaconValidateException {
+	public boolean update() {
 		final Block block = this.loc.getBlock();
 		if (!Material.BEACON.equals(block.getType()))
-			throw new BeaconValidateException();
+			return false;
 		this.tierLast      = this.tier;
 		this.primaryLast   = this.primary;
 		this.secondaryLast = this.secondary;
@@ -42,6 +50,58 @@ public class BeaconDAO {
 		this.tier      = beacon.getTier();
 		this.primary   = beacon.getPrimaryEffect();
 		this.secondary = beacon.getSecondaryEffect();
+		return true;
+	}
+
+
+
+	@Override
+	public Map<String, Object> serialize() {
+		final HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("Location", this.loc);
+		map.put("Owner",    this.owner.toString());
+		return map;
+	}
+	public static BeaconDAO deserialize(final Map<String, Object> map) {
+		final Location loc = (Location) map.get("Location");
+		final UUID owner = UUID.fromString( (String)map.get("Owner") );
+		return new BeaconDAO(loc, owner);
+	}
+
+
+
+	public boolean isProtectedArea(final Location loc,
+			final AreaShape shape, final int distance) {
+		switch (shape) {
+		case CIRCLE: return (this.loc.distance(loc) <= distance);
+		case SQUARE: {
+			final int distX = Math.abs( this.loc.getBlockX() - loc.getBlockX() );
+			final int distZ = Math.abs( this.loc.getBlockZ() - loc.getBlockZ() );
+			return (distX <= distance || distZ <= distance);
+		}
+		default: throw new RuntimeException("Unknown area shape: " + shape.toString());
+		}
+	}
+
+	public boolean isBuildAllowed(final Player player) {
+		return this.isBuildAllowed(player.getUniqueId());
+	}
+	public boolean isBuildAllowed(final UUID uuid) {
+		return Utils.EqualsUUID(this.owner, uuid);
+	}
+
+
+
+	public boolean isOwner(final Player player) {
+		return this.isOwner(player.getUniqueId());
+	}
+	public boolean isOwner(final UUID uuid) {
+		return Utils.EqualsUUID(this.owner, uuid);
+	}
+	public void sendOwnerMessage(final String msg) {
+		final Player owner = Bukkit.getPlayer(this.owner);
+		if (owner != null)
+			owner.sendMessage(msg);
 	}
 
 

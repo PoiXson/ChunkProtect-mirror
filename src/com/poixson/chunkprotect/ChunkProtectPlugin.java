@@ -1,10 +1,20 @@
 package com.poixson.chunkprotect;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
+import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.poixson.chunkprotect.listeners.AreaShape;
+import com.poixson.chunkprotect.listeners.BeaconDAO;
 import com.poixson.chunkprotect.listeners.BeaconHandler;
 import com.poixson.chunkprotect.listeners.BeaconListener;
 import com.poixson.chunkprotect.listeners.BlockPlaceBreakListener;
@@ -19,10 +29,13 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 5;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 9;
 
+	protected final HashMap<Location, BeaconDAO> beacons = new HashMap<Location, BeaconDAO>();
+
 	// configs
 	protected final AtomicReference<FileConfiguration> config     = new AtomicReference<FileConfiguration>(null);
 	protected final AtomicReference<AreaShape>         areaShape  = new AtomicReference<AreaShape>(null);
 	protected final AtomicReference<Integer[]>         areaSizes  = new AtomicReference<Integer[]>(null);
+	protected final AtomicReference<FileConfiguration> cfgBeacons = new AtomicReference<FileConfiguration>(null);
 
 	// listeners
 	protected final AtomicReference<BeaconHandler>  beaconHandler  = new AtomicReference<BeaconHandler>(null);
@@ -33,6 +46,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	public ChunkProtectPlugin() {
 		super();
+		ConfigurationSerialization.registerClass(BeaconDAO.class);
 	}
 
 
@@ -64,6 +78,15 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			if (previous != null)
 				previous.unregister();
 			listener.register();
+		}
+		// load beacons
+		{
+			final FileConfiguration cfg = this.cfgBeacons.get();
+			if (cfg != null) {
+				this.beaconHandler.get()
+					.load(cfg);
+				this.cfgBeacons.set(null);
+			}
 		}
 	}
 
@@ -142,11 +165,28 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				this.areaSizes.set(sizes);
 			}
 		}
+		// beacons.yml
+		{
+			final File file = new File(this.getDataFolder(), "beacons.yml");
+			final FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+			this.cfgBeacons.set(cfg);
 		}
 	}
 	protected void saveConfigs() {
 		// config.yml
 		super.saveConfig();
+		// beacons.yml
+		{
+			final File file = new File(this.getDataFolder(), "beacons.yml");
+			final FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+			this.beaconHandler.get()
+				.save(cfg);
+			try {
+				cfg.save(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	protected void configDefaults(final FileConfiguration cfg) {
 		cfg.addDefault("Area Shape", DEFAULT_AREA_SHAPE.toString());
@@ -173,6 +213,22 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		return sizes[tier].intValue();
 	}
 
+
+
+	// -------------------------------------------------------------------------------
+	// protected areas
+
+
+
+	public void addBeaconDAO(final BeaconDAO dao) {
+		this.beacons.put(dao.loc, dao);
+	}
+	public boolean removeBeaconDAO(final Location loc) {
+		return (this.beacons.remove(loc) != null);
+	}
+	public BeaconDAO getBeaconDAO(final Location loc) {
+		return this.beacons.get(loc);
+	}
 
 
 
