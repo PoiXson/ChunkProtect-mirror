@@ -1,0 +1,10 @@
+ChunkProtect - Claim protected chunks with a beacon
+
+
+2023-01-20 - 0.1.7
+==================
+* initial release
+* beacon event listener and area protection are working
+* todo: add protected area size to activated message
+* todo: teams and commands
+* todo: specify beacon block types in config.yml
