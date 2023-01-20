@@ -20,6 +20,7 @@ import com.poixson.chunkprotect.listeners.AreaShape;
 import com.poixson.chunkprotect.listeners.BeaconDAO;
 import com.poixson.chunkprotect.listeners.BeaconHandler;
 import com.poixson.chunkprotect.listeners.BeaconListener;
+import com.poixson.chunkprotect.listeners.PlayerMoveListener;
 import com.poixson.chunkprotect.listeners.ProtectedAreaHandler;
 
 
@@ -45,6 +46,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	// listeners
 	protected final AtomicReference<BeaconHandler>        beaconHandler  = new AtomicReference<BeaconHandler>(null);
 	protected final AtomicReference<BeaconListener>       beaconListener = new AtomicReference<BeaconListener>(null);
+	protected final AtomicReference<PlayerMoveListener>   moveListener   = new AtomicReference<PlayerMoveListener>(null);
 	protected final AtomicReference<ProtectedAreaHandler> protectHandler = new AtomicReference<ProtectedAreaHandler>(null);
 
 
@@ -93,6 +95,14 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				previous.unregister();
 			handler.register();
 		}
+		// player move listener
+		{
+			final PlayerMoveListener listener = new PlayerMoveListener(this);
+			final PlayerMoveListener previous = this.moveListener.getAndSet(listener);
+			if (previous != null)
+				previous.unregister();
+			listener.register();
+		}
 	}
 
 
@@ -107,6 +117,12 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		// save configs
 		this.saveConfigs();
 		this.config.set(null);
+		// player move listener
+		{
+			final PlayerMoveListener listener = this.moveListener.getAndSet(null);
+			if (listener != null)
+				listener.unregister();
+		}
 		// protected area handler
 		{
 			final ProtectedAreaHandler handler = this.protectHandler.getAndSet(null);
