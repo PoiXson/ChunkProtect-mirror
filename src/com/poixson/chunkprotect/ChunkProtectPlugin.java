@@ -29,10 +29,10 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	public static final AreaShape DEFAULT_AREA_SHAPE = AreaShape.CIRCLE;
 	public static final int DEFAULT_SPAWN_RADIUS = 56;
-	public static final int DEFAULT_PROTECTED_RADIUS_TIER1 = 1;
-	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 2;
-	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 5;
-	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 9;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER1 = 1 * 16;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 2 * 16;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 5 * 16;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 9 * 16;
 
 	protected final HashMap<Location, BeaconDAO> beacons = new HashMap<Location, BeaconDAO>();
 
@@ -43,9 +43,9 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	protected final AtomicReference<FileConfiguration> cfgBeacons = new AtomicReference<FileConfiguration>(null);
 
 	// listeners
-	protected final AtomicReference<BeaconHandler>  beaconHandler  = new AtomicReference<BeaconHandler>(null);
-	protected final AtomicReference<BeaconListener> beaconListener = new AtomicReference<BeaconListener>(null);
-	protected final AtomicReference<ProtectedAreaHandler>   protectHandler = new AtomicReference<ProtectedAreaHandler>(null);
+	protected final AtomicReference<BeaconHandler>        beaconHandler  = new AtomicReference<BeaconHandler>(null);
+	protected final AtomicReference<BeaconListener>       beaconListener = new AtomicReference<BeaconListener>(null);
+	protected final AtomicReference<ProtectedAreaHandler> protectHandler = new AtomicReference<ProtectedAreaHandler>(null);
 
 
 

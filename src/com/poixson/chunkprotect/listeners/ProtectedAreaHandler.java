@@ -61,7 +61,7 @@ public class ProtectedAreaHandler implements Listener {
 				// check protected area
 				final BeaconDAO dao = this.plugin.getProtectedArea(loc);
 				if (dao != null) {
-					player.sendMessage(ChatColor.AQUA + "Can't place a beacon here");
+					player.sendMessage(ChatColor.RED + "Can't place a beacon here");
 					return true;
 				}
 				return false;
@@ -70,9 +70,9 @@ public class ProtectedAreaHandler implements Listener {
 				final BeaconDAO dao = this.plugin.getBeaconDAO(loc);
 				if (dao == null)
 					return false;
-				dao.sendOwnerMessage(ChatColor.AQUA + "Your beacon has been broken!\nThe area is now unprotected!");
+				dao.sendOwnerMessage(ChatColor.RED + "Your beacon has been broken!\nThe area is now unprotected!");
 				if (!dao.isOwner(player))
-					player.sendMessage(ChatColor.AQUA + "Area protection broken!");
+					player.sendMessage(ChatColor.RED + "Area protection broken!");
 			}
 		}
 		// check protected area
@@ -80,7 +80,7 @@ public class ProtectedAreaHandler implements Listener {
 			final BeaconDAO dao = this.plugin.getProtectedArea(loc);
 			if (dao != null) {
 				if (!dao.isBuildAllowed(player)) {
-					player.sendMessage(ChatColor.AQUA + "You cannot build here");
+					player.sendMessage(ChatColor.RED + "You cannot build here");
 					return true;
 				}
 			}

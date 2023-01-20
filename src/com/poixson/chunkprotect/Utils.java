@@ -21,15 +21,13 @@ public final class Utils {
 		return EqualsUUID(playerA.getUniqueId(), playerB.getUniqueId());
 	}
 	public static boolean EqualsUUID(final UUID uuidA, final UUID uuidB) {
-		if (uuidA == null || uuidB == null) {
+		if (uuidA == null || uuidB == null)
 			return (uuidA == null && uuidB == null);
-		}
 		return uuidA.equals(uuidB);
 	}
 	public static boolean EqualsPotionEffect(final PotionEffect effectA, final PotionEffect effectB) {
-		if (effectA == null || effectB == null) {
+		if (effectA == null || effectB == null)
 			return (effectA == null && effectB == null);
-		}
 		return effectA.equals(effectB);
 	}
 

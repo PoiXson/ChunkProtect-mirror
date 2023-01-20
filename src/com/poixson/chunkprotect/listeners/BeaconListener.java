@@ -39,7 +39,7 @@ public class BeaconListener implements Listener {
 		switch (type) {
 		case ACTIVATED: {
 			this.plugin.addBeaconDAO(dao);
-			dao.sendOwnerMessage(ChatColor.AQUA + "The area is now protected");
+			dao.sendOwnerMessage(ChatColor.AQUA + "This area is now protected");
 			break;
 		}
 		case BROKEN:
