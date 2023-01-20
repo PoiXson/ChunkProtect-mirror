@@ -72,6 +72,8 @@ public class BeaconDAO implements ConfigurationSerializable {
 
 	public boolean isProtectedArea(final Location loc,
 			final AreaShape shape, final int distance) {
+		if (!Utils.EqualsWorld(this.loc, loc))
+			return false;
 		switch (shape) {
 		case CIRCLE: return (this.loc.distance(loc) <= distance);
 		case SQUARE: {
