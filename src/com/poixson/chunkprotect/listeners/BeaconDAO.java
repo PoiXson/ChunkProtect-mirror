@@ -75,7 +75,12 @@ public class BeaconDAO implements ConfigurationSerializable {
 		if (!Utils.EqualsWorld(this.loc, loc))
 			return false;
 		switch (shape) {
-		case CIRCLE: return (this.loc.distance(loc) <= distance);
+		case CIRCLE: {
+			final int x = this.loc.getBlockX() - loc.getBlockX();
+			final int z = this.loc.getBlockZ() - loc.getBlockZ();
+			final int dist = (int) Math.sqrt( Math.pow(x, 2) + Math.pow(z, 2) );
+			return (dist <= distance);
+		}
 		case SQUARE: {
 			final int distX = Math.abs( this.loc.getBlockX() - loc.getBlockX() );
 			final int distZ = Math.abs( this.loc.getBlockZ() - loc.getBlockZ() );
