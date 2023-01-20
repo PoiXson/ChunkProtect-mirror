@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -104,6 +105,11 @@ public class BeaconDAO implements ConfigurationSerializable {
 	}
 	public boolean isOwner(final UUID uuid) {
 		return Utils.EqualsUUID(this.owner, uuid);
+	}
+	public String getOwnerName() {
+		final OfflinePlayer player = Bukkit.getOfflinePlayer(this.owner);
+		if (player == null) return null;
+		return player.getName();
 	}
 	public void sendOwnerMessage(final String msg) {
 		final Player owner = Bukkit.getPlayer(this.owner);
