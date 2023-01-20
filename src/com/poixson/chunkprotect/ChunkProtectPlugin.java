@@ -243,9 +243,43 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 
 
+	public boolean isSpawnArea(final Location loc) {
+		int spawnX = 0;
+		int spawnZ = 0;
+		final Location spawn = loc.getWorld().getSpawnLocation();
+		if (spawn != null) {
+			spawnX = spawn.getBlockX();
+			spawnZ = spawn.getBlockZ();
+		}
+		final int radius = this.config.get().getInt("Spawn Radius");
+		final int x = Math.abs( spawnX - loc.getBlockX() );
+		final int z = Math.abs( spawnZ - loc.getBlockZ() );
+		final int distance = (int) Math.sqrt( Math.pow(x, 2) + Math.pow(z, 2) );
+		return (distance <= radius);
+	}
+
 	public BeaconDAO getBeaconDAO(final Location loc) {
 		return this.beaconHandler.get()
 				.beacons.get(loc);
+	}
+
+	public BeaconDAO getBeaconArea(final Location loc) {
+		final AreaShape shape = this.getAreaShape();
+		int distance = 0;
+		for (final int dist : this.areaSizes.get()) {
+			if (distance < dist)
+				distance = dist;
+		}
+		final Iterator<Entry<Location, BeaconDAO>> it =
+			this.beaconHandler.get()
+				.beacons.entrySet().iterator();
+		while (it.hasNext()) {
+			final Entry<Location, BeaconDAO> entry = it.next();
+			final BeaconDAO dao = entry.getValue();
+			if (dao.isProtectedArea(loc, shape, distance))
+				return dao;
+		}
+		return null;
 	}
 
 	public BeaconDAO getProtectedArea(final Location loc) {
