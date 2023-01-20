@@ -18,6 +18,7 @@ import com.poixson.chunkprotect.listeners.BeaconDAO;
 import com.poixson.chunkprotect.listeners.BeaconHandler;
 import com.poixson.chunkprotect.listeners.BeaconListener;
 import com.poixson.chunkprotect.listeners.BlockPlaceBreakListener;
+import com.poixson.chunkprotect.listeners.ProtectedAreaHandler;
 
 
 public class ChunkProtectPlugin extends JavaPlugin {
@@ -41,6 +42,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	protected final AtomicReference<BeaconHandler>  beaconHandler  = new AtomicReference<BeaconHandler>(null);
 	protected final AtomicReference<BeaconListener> beaconListener = new AtomicReference<BeaconListener>(null);
 	protected final AtomicReference<BlockPlaceBreakListener> blockListener = new AtomicReference<BlockPlaceBreakListener>(null);
+	protected final AtomicReference<ProtectedAreaHandler>   protectHandler = new AtomicReference<ProtectedAreaHandler>(null);
 
 
 
@@ -88,12 +90,26 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				this.cfgBeacons.set(null);
 			}
 		}
+		// protected area handler
+		{
+			final ProtectedAreaHandler handler = new ProtectedAreaHandler(this);
+			final ProtectedAreaHandler previous = this.protectHandler.getAndSet(handler);
+			if (previous != null)
+				previous.unregister();
+			handler.register();
+		}
 	}
 
 
 
 	@Override
 	public void onDisable() {
+		// protected area handler
+		{
+			final ProtectedAreaHandler handler = this.protectHandler.getAndSet(null);
+			if (handler != null)
+				handler.unregister();
+		}
 		// beacon handler
 		{
 			final BeaconHandler handler = this.beaconHandler.getAndSet(null);
@@ -228,6 +244,20 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	}
 	public BeaconDAO getBeaconDAO(final Location loc) {
 		return this.beacons.get(loc);
+	}
+
+	public BeaconDAO getProtectedArea(final Location loc) {
+		final AreaShape shape = this.getAreaShape();
+		int distance;
+		final Iterator<Entry<Location, BeaconDAO>> it = this.beacons.entrySet().iterator();
+		while (it.hasNext()) {
+			final Entry<Location, BeaconDAO> entry = it.next();
+			final BeaconDAO dao = entry.getValue();
+			distance = this.getProtectedAreaRadius(dao.tier);
+			if (dao.isProtectedArea(loc, shape, distance))
+				return dao;
+		}
+		return null;
 	}
 
 
