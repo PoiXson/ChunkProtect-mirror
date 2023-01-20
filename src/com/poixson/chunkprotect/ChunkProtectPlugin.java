@@ -27,7 +27,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	public static final Logger log = Logger.getLogger("Minecraft");
 	public static final String LOG_PREFIX = "[ChunkProtect] ";
 
-	public static final AreaShape DEFAULT_AREA_SHAPE = AreaShape.CIRCLE;
+	public static final AreaShape DEFAULT_AREA_SHAPE = AreaShape.SQUARE;
 	public static final int DEFAULT_SPAWN_RADIUS = 56;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER1 = 1 * 16;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 2 * 16;
