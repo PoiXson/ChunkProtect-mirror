@@ -1,6 +1,7 @@
 package com.poixson.chunkprotect.listeners;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -21,7 +22,8 @@ public class PlayerMoveListener implements Listener {
 
 	protected final ChunkProtectPlugin plugin;
 
-	protected final HashMap<UUID, BeaconDAO> inarea = new HashMap<UUID, BeaconDAO>();
+	protected final HashMap<UUID, BeaconDAO> inarea  = new HashMap<UUID, BeaconDAO>();
+	protected final HashSet<UUID>            inspawn = new HashSet<UUID>();
 
 
 
@@ -47,20 +49,42 @@ public class PlayerMoveListener implements Listener {
 		final Location from = event.getFrom();
 		if (from.getBlockX() != to.getBlockX()
 		||  from.getBlockZ() != to.getBlockZ() ) {
-			final UUID uuid = event.getPlayer().getUniqueId();
-			final BeaconDAO dao = this.plugin.getProtectedArea(to);
-			final BeaconDAO daoLast = this.inarea.get(uuid);
-			this.inarea.put(uuid, dao);
-			if (!Utils.EqualsBeaconDAO(dao, daoLast)) {
-				final Player player = event.getPlayer();
-				if (dao == null) {
-					player.sendMessage(ChatColor.AQUA + "You left the protected area");
-				} else
-				if (dao.isOwner(player)) {
-					player.sendMessage(ChatColor.AQUA + "Welcome home");
-				} else {
-					final String name = Bukkit.getOfflinePlayer(dao.owner).getName();
-					player.sendMessage(ChatColor.AQUA + "You entered the area of: " + name);
+			final Player player = event.getPlayer();
+			final UUID uuid = player.getUniqueId();
+			// spawn area
+			{
+				final boolean inSpawn = this.plugin.isSpawnArea(to);
+				final boolean lastInSpawn = this.inspawn.contains(uuid);
+				if (inSpawn != lastInSpawn) {
+					if (inSpawn) {
+						this.inspawn.add(uuid);
+						player.sendMessage(ChatColor.AQUA + "You've entered the spawn area");
+					} else {
+						this.inspawn.remove(uuid);
+						player.sendMessage(ChatColor.AQUA + "You left the spawn area");
+					}
+				}
+			}
+			// beacon area
+			{
+				final BeaconDAO dao = this.plugin.getProtectedArea(to);
+				final BeaconDAO daoLast = this.inarea.get(uuid);
+				if (dao == null) this.inarea.remove(uuid);
+				else             this.inarea.put(uuid, dao);
+				if (!Utils.EqualsBeaconDAO(dao, daoLast)) {
+					if (dao == null) {
+						player.sendMessage(ChatColor.AQUA + "You left the protected area");
+					} else
+						if (dao.isOwner(player)) {
+							player.sendMessage(ChatColor.AQUA + "Welcome home");
+						} else {
+							final String name = dao.getOwnerName();
+						if (name == null || name.isEmpty()) {
+							player.sendMessage(ChatColor.AQUA + "You entered a protected area");
+						} else {
+							player.sendMessage(ChatColor.AQUA + "You entered the area of: " + name);
+						}
+					}
 				}
 			}
 		}
