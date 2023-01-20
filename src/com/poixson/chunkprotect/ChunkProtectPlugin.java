@@ -40,7 +40,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	// configs
 	protected final AtomicReference<FileConfiguration> config     = new AtomicReference<FileConfiguration>(null);
 	protected final AtomicReference<AreaShape>         areaShape  = new AtomicReference<AreaShape>(null);
-	protected final AtomicReference<Integer[]>         areaSizes  = new AtomicReference<Integer[]>(null);
+	protected final AtomicReference<int[]>             areaSizes  = new AtomicReference<int[]>(null);
 	protected final AtomicReference<FileConfiguration> cfgBeacons = new AtomicReference<FileConfiguration>(null);
 
 	// listeners
@@ -181,12 +181,12 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			}
 			// protected area radius
 			{
-				final Integer[] sizes = new Integer[] {
-					Integer.valueOf(0),
-					Integer.valueOf( cfg.getInt("Protect Area Tier 1") ),
-					Integer.valueOf( cfg.getInt("Protect Area Tier 2") ),
-					Integer.valueOf( cfg.getInt("Protect Area Tier 3") ),
-					Integer.valueOf( cfg.getInt("Protect Area Tier 4") ),
+				final int[] sizes = new int[] {
+					0,
+					cfg.getInt("Protect Area Tier 1"),
+					cfg.getInt("Protect Area Tier 2"),
+					cfg.getInt("Protect Area Tier 3"),
+					cfg.getInt("Protect Area Tier 4"),
 				};
 				this.areaSizes.set(sizes);
 			}
@@ -231,12 +231,12 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	public int getProtectedAreaRadius(final int tier) {
 		if (tier < 0 || tier > 4) throw new RuntimeException("Tier value is out of range: " + Integer.toString(tier));
-		final Integer[] sizes = this.areaSizes.get();
+		final int[] sizes = this.areaSizes.get();
 		if (sizes == null) {
 			log.warning(LOG_PREFIX + "protected area sizes not set!");
 			return 0;
 		}
-		return sizes[tier].intValue();
+		return sizes[tier];
 	}
 
 
