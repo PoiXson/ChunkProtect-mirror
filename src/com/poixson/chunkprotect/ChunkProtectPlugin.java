@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,6 +25,8 @@ import com.poixson.chunkprotect.listeners.ProtectedAreaHandler;
 
 
 public class ChunkProtectPlugin extends JavaPlugin {
+	public static final Logger log = Logger.getLogger("Minecraft");
+	public static final String LOG_PREFIX = "[ChunkProtect] ";
 
 	public static final AreaShape DEFAULT_AREA_SHAPE = AreaShape.CIRCLE;
 	public static final int DEFAULT_SPAWN_RADIUS = 56;
@@ -104,6 +109,14 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		// stop schedulers
+		try {
+			Bukkit.getScheduler()
+				.cancelTasks(this);
+		} catch (Exception ignore) {}
+		// save configs
+		this.saveConfigs();
+		this.config.set(null);
 		// protected area handler
 		{
 			final ProtectedAreaHandler handler = this.protectHandler.getAndSet(null);
@@ -130,9 +143,6 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		}
 		// stop listeners
 		HandlerList.unregisterAll(this);
-		// save configs
-		this.saveConfigs();
-		this.config.set(null);
 	}
 
 
