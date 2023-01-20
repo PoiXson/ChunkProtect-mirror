@@ -68,7 +68,6 @@ public class ProtectedAreaHandler implements Listener {
 					player.sendMessage(ChatColor.RED + "Can't place a beacon here");
 					return true;
 				}
-				return false;
 			// break beacon
 			} else {
 				final BeaconDAO dao = this.plugin.getBeaconDAO(loc);
@@ -78,6 +77,7 @@ public class ProtectedAreaHandler implements Listener {
 				if (!dao.isOwner(player))
 					player.sendMessage(ChatColor.RED + "Area protection broken!");
 			}
+			return false;
 		}
 		// check protected area
 		{
