@@ -132,21 +132,21 @@ public class BeaconHandler extends BukkitRunnable implements Listener {
 			return false;
 		// tier changed
 		if (dao.tier != dao.tierLast) {
-			if (dao.tier == 0 && dao.tierLast > 0) {
-				this.pm.callEvent(new BeaconEvent(BeaconEventType.Activated, dao));
-			} else
 			if (dao.tier > 0 && dao.tierLast == 0) {
-				this.pm.callEvent(new BeaconEvent(BeaconEventType.Deactivated, dao));
+				this.pm.callEvent(new BeaconEvent(BeaconEventType.ACTIVATED, dao));
+			} else
+			if (dao.tier == 0 && dao.tierLast > 0) {
+				this.pm.callEvent(new BeaconEvent(BeaconEventType.DEACTIVATED, dao));
 			} else {
-				this.pm.callEvent(new BeaconEvent(BeaconEventType.TierChanged, dao));
+				this.pm.callEvent(new BeaconEvent(BeaconEventType.TIER_CHANGED, dao));
 			}
 		}
 		// primary effect changed
-		if (!Utils.PotionEffectEquals(dao.primary, dao.primaryLast))
-			this.pm.callEvent(new BeaconEvent(BeaconEventType.PrimaryChanged, dao));
+		if (!Utils.EqualsPotionEffect(dao.primary, dao.primaryLast))
+			this.pm.callEvent(new BeaconEvent(BeaconEventType.PRIMARY_CHANGED, dao));
 		// secondary effect changed
-		if (!Utils.PotionEffectEquals(dao.secondary, dao.secondaryLast))
-			this.pm.callEvent(new BeaconEvent(BeaconEventType.SecondaryChanged, dao));
+		if (!Utils.EqualsPotionEffect(dao.secondary, dao.secondaryLast))
+			this.pm.callEvent(new BeaconEvent(BeaconEventType.SECONDARY_CHANGED, dao));
 		return true;
 	}
 

@@ -3,14 +3,12 @@ package com.poixson.chunkprotect.listeners;
 
 public enum BeaconEventType {
 
-
-	Placed,
-	Broken,
-	Activated,
-	Deactivated,
-	TierChanged,
-	PrimaryChanged,
-	SecondaryChanged,
-
+	PLACED,
+	BROKEN,
+	ACTIVATED,
+	DEACTIVATED,
+	TIER_CHANGED,
+	PRIMARY_CHANGED,
+	SECONDARY_CHANGED,
 
 }
