@@ -3,12 +3,19 @@ package com.poixson.chunkprotect;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -33,6 +40,10 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 2 * 16;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 5 * 16;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 9 * 16;
+	public static final Map<String, Integer> DEFAULT_STARTING_KIT = Map.of(
+		"BEACON",     Integer.valueOf(1),
+		"IRON_BLOCK", Integer.valueOf(9)
+	);
 
 	// configs
 	protected final AtomicReference<FileConfiguration> config     = new AtomicReference<FileConfiguration>(null);
@@ -46,6 +57,9 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	protected final AtomicReference<PlayerMoveListener>   moveListener   = new AtomicReference<PlayerMoveListener>(null);
 	protected final AtomicReference<ProtectedAreaHandler> protectHandler = new AtomicReference<ProtectedAreaHandler>(null);
 
+	// starting kit
+	protected final AtomicReference<StartingKit> kits = new AtomicReference<StartingKit>(null);
+
 
 
 	public ChunkProtectPlugin() {
@@ -57,6 +71,13 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		// starting kit handler
+		{
+			final StartingKit kit = new StartingKit(this);
+			final StartingKit previous = this.kits.getAndSet(kit);
+			if (previous != null)
+				previous.unregister();
+		}
 		// load configs
 		this.loadConfigs();
 		// beacon handler
@@ -100,6 +121,8 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				previous.unregister();
 			listener.register();
 		}
+		// starting kits
+		this.kits.get().register();
 	}
 
 
@@ -114,6 +137,12 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		// save configs
 		this.saveConfigs();
 		this.config.set(null);
+		// starting kits
+		{
+			final StartingKit kit = this.kits.getAndSet(null);
+			if (kit != null)
+				kit.unregister();
+		}
 		// player move listener
 		{
 			final PlayerMoveListener listener = this.moveListener.getAndSet(null);
@@ -150,6 +179,8 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 
 	protected void loadConfigs() {
+		final StartingKit kit_handler = this.kits.get();
+		if (kit_handler == null) throw new NullPointerException("kit handler not set");
 		// plugin dir
 		{
 			final File path = this.getDataFolder();
@@ -166,6 +197,29 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			this.configDefaults(cfg);
 			cfg.options().copyDefaults(true);
 			super.saveConfig();
+			// kits
+			{
+				final ConfigurationSection c = cfg.getConfigurationSection("Starting Kit");
+				final Set<String> keys = c.getKeys(false);
+				for (final String key : keys) {
+					final Material type = Material.getMaterial(key);
+					if (type == null) {
+						log.severe(LOG_PREFIX + "Unknown kit item: " + key);
+						continue;
+					}
+					final int qty = c.getInt(key);
+					if (qty <= 0) {
+						log.severe(LOG_PREFIX + "Invalid qty for kit item: " + key);
+						continue;
+					}
+					kit_handler.items.put(type, Integer.valueOf(qty));
+				}
+				log.info(String.format(
+					"%sLoaded %d kit stacks",
+					LOG_PREFIX,
+					Integer.valueOf(kit_handler.items.size())
+				));
+			}
 			// area shape
 			{
 				final AreaShape shape = AreaShape.Get(cfg.getString("Area Shape"));
@@ -194,6 +248,19 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			final FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 			this.cfgBeacons.set(cfg);
 		}
+		// player-kits.yml - received kit
+		{
+			final File file = new File(this.getDataFolder(), "player-kits.yml");
+			final FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+			final List<String> list = cfg.getStringList("Players");
+			if (list != null && !list.isEmpty()) {
+				UUID uuid;
+				for (final String str : list) {
+					uuid = UUID.fromString(str);
+					kit_handler.players.add(uuid);
+				}
+			}
+		}
 	}
 	protected void saveConfigs() {
 		// config.yml
@@ -210,8 +277,25 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		// player-kits.yml - received kit
+		{
+			final StartingKit kit = this.kits.get();
+			final File file = new File(this.getDataFolder(), "player-kits.yml");
+			final FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+			final LinkedList<String> list = new LinkedList<String>();
+			for (final UUID uuid : kit.players) {
+				list.add(uuid.toString());
+			}
+			cfg.set("Players", list);
+			try {
+				cfg.save(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	protected void configDefaults(final FileConfiguration cfg) {
+		cfg.addDefault("Starting Kit", DEFAULT_STARTING_KIT);
 		cfg.addDefault("Area Shape", DEFAULT_AREA_SHAPE.toString());
 		cfg.addDefault("Spawn Radius", Integer.valueOf(DEFAULT_SPAWN_RADIUS));
 		cfg.addDefault("Protect Area Tier 1", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER1));
