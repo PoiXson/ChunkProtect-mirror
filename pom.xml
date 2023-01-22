@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated: Tue Jan 17 12:05:49 PM EST 2023 -->
+<!-- Generated: Sun Jan 22 05:00:09 PM EST 2023 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -7,7 +7,7 @@
 	<name>ChunkProtect</name>
 	<artifactId>chunkprotect</artifactId>
 	<groupId>com.poixson</groupId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.7-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<url>https://poixson.com</url>
 	<description>Claim protected chunks with a beacon</description>
