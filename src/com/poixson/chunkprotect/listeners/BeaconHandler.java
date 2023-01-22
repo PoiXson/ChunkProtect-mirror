@@ -73,7 +73,9 @@ public class BeaconHandler extends BukkitRunnable implements Listener {
 			.registerEvents(this, this.plugin);
 	}
 	public void stop() {
-		this.cancel();
+		try {
+			this.cancel();
+		} catch (IllegalStateException ignore) {}
 		HandlerList.unregisterAll(this);
 	}
 
