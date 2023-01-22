@@ -36,8 +36,33 @@ public class BeaconListener implements Listener {
 	public void onBeaconChange(final BeaconEvent event) {
 		final BeaconEventType type = event.getType();
 		final BeaconDAO dao = event.getDAO();
-		if (BeaconEventType.ACTIVATED.equals(type))
-			dao.sendOwnerMessage(ChatColor.AQUA + "This area is now protected");
+		final StringBuilder msg = new StringBuilder();
+		switch (type) {
+		case ACTIVATED:
+		case TIER_CHANGED:
+			msg.append("This area is now protected (");
+			final int radius = this.plugin.getProtectedAreaRadius(dao.tier);
+			final int diameter = radius * 2;
+			if (diameter % 16 == 0) {
+				final int diam = diameter / 16;
+				msg.append(String.format(
+					"%dx%d chunks",
+					Integer.valueOf(diam),
+					Integer.valueOf(diam)
+				));
+			} else {
+				msg.append(String.format(
+					"%dx%d blocks",
+					Integer.valueOf(diameter),
+					Integer.valueOf(diameter)
+				));
+			}
+			msg.append(')');
+			break;
+		default: break;
+		}
+		if (!msg.isEmpty())
+			dao.sendOwnerMessage(ChatColor.AQUA + msg.toString());
 	}
 
 
