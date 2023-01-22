@@ -86,7 +86,7 @@ public class BeaconDAO implements ConfigurationSerializable {
 		case SQUARE: {
 			final int distX = Math.abs( this.loc.getBlockX() - loc.getBlockX() );
 			final int distZ = Math.abs( this.loc.getBlockZ() - loc.getBlockZ() );
-			return (distX <= distance || distZ <= distance);
+			return (distX <= distance && distZ <= distance);
 		}
 		default: throw new RuntimeException("Unknown area shape: " + shape.toString());
 		}
