@@ -36,10 +36,10 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	public static final AreaShape DEFAULT_AREA_SHAPE = AreaShape.SQUARE;
 	public static final int DEFAULT_SPAWN_RADIUS = 56;
-	public static final int DEFAULT_PROTECTED_RADIUS_TIER1 = 1 * 16;
-	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 2 * 16;
-	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 5 * 16;
-	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 9 * 16;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER1 = 8;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 24;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 40;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 80;
 	public static final Map<String, Integer> DEFAULT_STARTING_KIT = Map.of(
 		"BEACON",     Integer.valueOf(1),
 		"IRON_BLOCK", Integer.valueOf(9)
