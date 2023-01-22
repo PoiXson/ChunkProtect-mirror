@@ -61,7 +61,7 @@ public class BeaconListener implements Listener {
 			break;
 		default: break;
 		}
-		if (!msg.isEmpty())
+		if (msg.length() > 0)
 			dao.sendOwnerMessage(ChatColor.AQUA + msg.toString());
 	}
 
