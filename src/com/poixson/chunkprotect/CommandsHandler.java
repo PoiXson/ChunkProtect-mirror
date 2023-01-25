@@ -42,7 +42,7 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 					sender.sendMessage("Console cannot use this command");
 					return true;
 				}
-				final TeamDAO team = this.plugin.getTeam(uuid);
+				final TeamDAO team = this.plugin.getOwnTeam(uuid);
 				@SuppressWarnings("deprecation")
 				final OfflinePlayer p = Bukkit.getOfflinePlayer(args[1]);
 				if (p == null) {
@@ -64,7 +64,7 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 					sender.sendMessage("Player not found: " + args[1]);
 					return true;
 				}
-				final TeamDAO team = this.plugin.getTeam(uuid);
+				final TeamDAO team = this.plugin.getOwnTeam(uuid);
 				if (team.removePlayer(p.getUniqueId())) {
 					sender.sendMessage("Removed player from your team: " + args[1]);
 				} else {
@@ -83,7 +83,7 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 					return true;
 				}
 				if (num > 1) {
-					final TeamDAO team = this.plugin.getTeam(uuid);
+					final TeamDAO team = this.plugin.getOwnTeam(uuid);
 					team.setTeamName(args[1].trim());
 					sender.sendMessage("Your team name is changed to: " + args[1]);
 				} else {

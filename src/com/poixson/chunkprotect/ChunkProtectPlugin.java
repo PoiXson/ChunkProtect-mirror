@@ -446,7 +446,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 
 
-	public TeamDAO getTeam(final UUID uuid) {
+	public TeamDAO getOwnTeam(final UUID uuid) {
 		for (final TeamDAO team : this.teams) {
 			if (Utils.EqualsUUID(uuid, team.owner))
 				return team;
@@ -454,14 +454,14 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		return null;
 	}
 	public String getTeamName(final UUID uuid) {
-		final TeamDAO team = this.getTeam(uuid);
+		final TeamDAO team = this.getOwnTeam(uuid);
 		if (team == null) return null;
 		return team.getTeamName();
 	}
 	public TeamDAO findTeam(final UUID uuid) {
 		// team owner
 		{
-			TeamDAO team = this.getTeam(uuid);
+			TeamDAO team = this.getOwnTeam(uuid);
 			if (team != null)
 				return team;
 		}
