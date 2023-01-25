@@ -363,22 +363,6 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 
 
-	public AreaShape getAreaShape() {
-		return this.areaShape.get();
-	}
-
-	public int getProtectedAreaRadius(final int tier) {
-		if (tier < 0 || tier > 4) throw new RuntimeException("Tier value is out of range: " + Integer.toString(tier));
-		final int[] sizes = this.areaSizes.get();
-		if (sizes == null) {
-			log.warning(LOG_PREFIX + "protected area sizes not set!");
-			return 0;
-		}
-		return sizes[tier];
-	}
-
-
-
 	// -------------------------------------------------------------------------------
 	// protected areas
 
@@ -437,6 +421,22 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				return dao;
 		}
 		return null;
+	}
+
+
+
+	public AreaShape getAreaShape() {
+		return this.areaShape.get();
+	}
+
+	public int getProtectedAreaRadius(final int tier) {
+		if (tier < 0 || tier > 4) throw new RuntimeException("Tier value is out of range: " + Integer.toString(tier));
+		final int[] sizes = this.areaSizes.get();
+		if (sizes == null) {
+			log.warning(LOG_PREFIX + "protected area sizes not set!");
+			return 0;
+		}
+		return sizes[tier];
 	}
 
 

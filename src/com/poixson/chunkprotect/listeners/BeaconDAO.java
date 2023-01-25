@@ -92,9 +92,6 @@ public class BeaconDAO implements ConfigurationSerializable {
 		}
 	}
 
-	public boolean isBuildAllowed(final Player player) {
-		return this.isBuildAllowed(player.getUniqueId());
-	}
 	public boolean isBuildAllowed(final UUID uuid) {
 		return Utils.EqualsUUID(this.owner, uuid);
 	}
