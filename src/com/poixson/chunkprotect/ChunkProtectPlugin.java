@@ -449,11 +449,17 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 
 	public TeamDAO getOwnTeam(final UUID uuid) {
+		// existing dao
 		for (final TeamDAO team : this.teams) {
 			if (Utils.EqualsUUID(uuid, team.owner))
 				return team;
 		}
-		return null;
+		// new dao
+		{
+			final TeamDAO team = new TeamDAO(uuid);
+			this.teams.add(team);
+			return team;
+		}
 	}
 	public String getTeamName(final UUID uuid) {
 		final TeamDAO team = this.getOwnTeam(uuid);
