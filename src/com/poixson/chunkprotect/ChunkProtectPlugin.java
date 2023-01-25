@@ -52,6 +52,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	protected final AtomicReference<FileConfiguration> cfgBeacons = new AtomicReference<FileConfiguration>(null);
 
 	// listeners
+	protected final AtomicReference<CommandsHandler>      commands       = new AtomicReference<CommandsHandler>(null);
 	protected final AtomicReference<BeaconHandler>        beaconHandler  = new AtomicReference<BeaconHandler>(null);
 	protected final AtomicReference<BeaconListener>       beaconListener = new AtomicReference<BeaconListener>(null);
 	protected final AtomicReference<PlayerMoveListener>   moveListener   = new AtomicReference<PlayerMoveListener>(null);
@@ -123,12 +124,26 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		}
 		// starting kits
 		this.kits.get().register();
+		// commands
+		{
+			final CommandsHandler handler = new CommandsHandler(this);
+			final CommandsHandler previous = this.commands.getAndSet(handler);
+			if (previous != null)
+				previous.unregister();
+			handler.register();
+		}
 	}
 
 
 
 	@Override
 	public void onDisable() {
+		// commands
+		{
+			final CommandsHandler handler = this.commands.getAndSet(null);
+			if (handler != null)
+				handler.unregister();
+		}
 		// stop schedulers
 		try {
 			Bukkit.getScheduler()

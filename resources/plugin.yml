@@ -6,3 +6,10 @@ softdepend: [ Multiverse-Core ]
 authors: [ lorenzop ]
 website: ${project.url}
 description: ${project.description}
+commands:
+    team:
+        description: "Allow other players to join your team"
+        usage: "/teams <name/add/remove/list>"
+    teams:
+        description: "Allow other players to join your team"
+        usage: "/teams <name/add/remove/list>"
