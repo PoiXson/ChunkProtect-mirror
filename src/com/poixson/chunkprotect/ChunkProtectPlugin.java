@@ -221,25 +221,27 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			// kits
 			{
 				final ConfigurationSection c = cfg.getConfigurationSection("Starting Kit");
-				final Set<String> keys = c.getKeys(false);
-				for (final String key : keys) {
-					final Material type = Material.getMaterial(key);
-					if (type == null) {
-						log.severe(LOG_PREFIX + "Unknown kit item: " + key);
-						continue;
+				if (c != null) {
+					final Set<String> keys = c.getKeys(false);
+					for (final String key : keys) {
+						final Material type = Material.getMaterial(key);
+						if (type == null) {
+							log.severe(LOG_PREFIX + "Unknown kit item: " + key);
+							continue;
+						}
+						final int qty = c.getInt(key);
+						if (qty <= 0) {
+							log.severe(LOG_PREFIX + "Invalid qty for kit item: " + key);
+							continue;
+						}
+						kit_handler.items.put(type, Integer.valueOf(qty));
 					}
-					final int qty = c.getInt(key);
-					if (qty <= 0) {
-						log.severe(LOG_PREFIX + "Invalid qty for kit item: " + key);
-						continue;
-					}
-					kit_handler.items.put(type, Integer.valueOf(qty));
+					log.info(String.format(
+						"%sLoaded %d kit stacks",
+						LOG_PREFIX,
+						Integer.valueOf(kit_handler.items.size())
+					));
 				}
-				log.info(String.format(
-					"%sLoaded %d kit stacks",
-					LOG_PREFIX,
-					Integer.valueOf(kit_handler.items.size())
-				));
 			}
 			// area shape
 			{
