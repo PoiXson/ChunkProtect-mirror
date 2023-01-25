@@ -1,5 +1,7 @@
 package com.poixson.chunkprotect.listeners;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -14,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.poixson.chunkprotect.ChunkProtectPlugin;
+import com.poixson.chunkprotect.TeamDAO;
 
 
 public class ProtectedAreaHandler implements Listener {
@@ -83,9 +86,13 @@ public class ProtectedAreaHandler implements Listener {
 		{
 			final BeaconDAO dao = this.plugin.getProtectedArea(loc);
 			if (dao != null) {
-				if (!dao.isBuildAllowed(player)) {
-					player.sendMessage(ChatColor.RED + "You cannot build here");
-					return true;
+				final UUID uuid = player.getUniqueId();
+				if (!dao.isBuildAllowed(uuid)) {
+					final TeamDAO team = this.plugin.findTeam(uuid);
+					if (!team.isOnTeam(uuid)) {
+						player.sendMessage(ChatColor.RED + "You cannot build here");
+						return true;
+					}
 				}
 			}
 		}

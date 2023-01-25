@@ -2,6 +2,8 @@ package com.poixson.chunkprotect;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
@@ -60,6 +63,9 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	// starting kit
 	protected final AtomicReference<StartingKit> kits = new AtomicReference<StartingKit>(null);
+
+	// teams
+	protected final CopyOnWriteArraySet<TeamDAO> teams = new CopyOnWriteArraySet<TeamDAO>();
 
 
 
@@ -276,6 +282,22 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				}
 			}
 		}
+		// teams.yml
+		{
+			final File file = new File(this.getDataFolder(), "teams.yml");
+			final FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+			for (final String name : cfg.getKeys(false)) {
+				final ConfigurationSection c = cfg.getConfigurationSection(name);
+				final UUID owner = UUID.fromString(c.getString("Owner"));
+				final TeamDAO team = new TeamDAO(owner);
+				final String teamName = c.getString("Team Name");
+				team.name.set(teamName);
+				for (final String str : c.getStringList("Teammates")) {
+					final UUID uuid = UUID.fromString(str);
+					team.teammates.add(uuid);
+				}
+			}
+		}
 	}
 	protected void saveConfigs() {
 		// config.yml
@@ -302,6 +324,26 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				list.add(uuid.toString());
 			}
 			cfg.set("Players", list);
+			try {
+				cfg.save(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		// teams.yml
+		{
+			final File file = new File(this.getDataFolder(), "teams.yml");
+			final FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+			for (final TeamDAO team : this.teams) {
+				final HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("Team Name", team.name.get());
+				final Set<String> teammates = new HashSet<String>();
+				for (final UUID uuid : team.teammates) {
+					teammates.add(uuid.toString());
+				}
+				map.put("Teammates", teammates);
+				cfg.set(team.owner.toString(), map);
+			}
 			try {
 				cfg.save(file);
 			} catch (IOException e) {
@@ -393,6 +435,41 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			distance = this.getProtectedAreaRadius(dao.tier);
 			if (dao.isProtectedArea(loc, shape, distance))
 				return dao;
+		}
+		return null;
+	}
+
+
+
+	// -------------------------------------------------------------------------------
+	// teams
+
+
+
+	public TeamDAO getTeam(final UUID uuid) {
+		for (final TeamDAO team : this.teams) {
+			if (Utils.EqualsUUID(uuid, team.owner))
+				return team;
+		}
+		return null;
+	}
+	public String getTeamName(final UUID uuid) {
+		final TeamDAO team = this.getTeam(uuid);
+		if (team == null) return null;
+		return team.getTeamName();
+	}
+	public TeamDAO findTeam(final UUID uuid) {
+		// team owner
+		{
+			TeamDAO team = this.getTeam(uuid);
+			if (team != null)
+				return team;
+		}
+		// teammates
+		for (final TeamDAO team : this.teams) {
+			team.isOnTeam(uuid);
+			if (team != null)
+				return team;
 		}
 		return null;
 	}
