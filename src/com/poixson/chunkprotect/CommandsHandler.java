@@ -49,7 +49,14 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 					sender.sendMessage(ChatColor.AQUA + "Unknown player: " + args[1]);
 					return true;
 				}
-				team.addPlayer(p.getUniqueId());
+				final UUID u = p.getUniqueId();
+				// remove from other teams
+				for (final TeamDAO t : this.plugin.teams) {
+					if (team.equals(t)) continue;
+					t.teammates.remove(u);
+				}
+				// add to team
+				team.addPlayer(u);
 				sender.sendMessage(ChatColor.AQUA + "Added player to your team: " + args[1]);
 				return true;
 			}
