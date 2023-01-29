@@ -44,8 +44,7 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 					return true;
 				}
 				final TeamDAO team = this.plugin.getOwnTeam(uuid);
-				@SuppressWarnings("deprecation")
-				final OfflinePlayer p = Bukkit.getOfflinePlayer(args[1]);
+				final Player p = Bukkit.getPlayer(args[1]);
 				if (p == null) {
 					sender.sendMessage(ChatColor.AQUA + "Unknown player: " + args[1]);
 					return true;
