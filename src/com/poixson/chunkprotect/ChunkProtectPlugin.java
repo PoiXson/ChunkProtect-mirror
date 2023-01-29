@@ -222,17 +222,21 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				if (c != null) {
 					final Set<String> keys = c.getKeys(false);
 					for (final String key : keys) {
-						final Material type = Material.getMaterial(key);
-						if (type == null) {
-							log.severe(LOG_PREFIX + "Unknown kit item: " + key);
-							continue;
+						try {
+							final Material type = Material.getMaterial(key);
+							if (type == null) {
+								log.severe(LOG_PREFIX + "Unknown kit item: " + key);
+								continue;
+							}
+							final int qty = c.getInt(key);
+							if (qty <= 0) {
+								log.severe(LOG_PREFIX + "Invalid qty for kit item: " + key);
+								continue;
+							}
+							kit_handler.items.put(type, Integer.valueOf(qty));
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-						final int qty = c.getInt(key);
-						if (qty <= 0) {
-							log.severe(LOG_PREFIX + "Invalid qty for kit item: " + key);
-							continue;
-						}
-						kit_handler.items.put(type, Integer.valueOf(qty));
 					}
 					log.info(String.format(
 						"%sLoaded %d kit stacks",
@@ -277,8 +281,12 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			if (list != null && !list.isEmpty()) {
 				UUID uuid;
 				for (final String str : list) {
-					uuid = UUID.fromString(str);
-					kit_handler.players.add(uuid);
+					try {
+						uuid = UUID.fromString(str);
+						kit_handler.players.add(uuid);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -287,14 +295,19 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			final File file = new File(this.getDataFolder(), "teams.yml");
 			final FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 			for (final String key : cfg.getKeys(false)) {
-				final ConfigurationSection c = cfg.getConfigurationSection(key);
-				final UUID owner = UUID.fromString(key);
-				final TeamDAO team = new TeamDAO(owner);
-				final String teamName = c.getString("Team Name");
-				team.name.set(teamName);
-				for (final String str : c.getStringList("Teammates")) {
-					final UUID uuid = UUID.fromString(str);
-					team.teammates.add(uuid);
+				try {
+					final ConfigurationSection c = cfg.getConfigurationSection(key);
+					final UUID owner = UUID.fromString(key);
+					final TeamDAO team = new TeamDAO(owner);
+					final String teamName = c.getString("Team Name");
+					team.name.set(teamName);
+					for (final String str : c.getStringList("Teammates")) {
+						final UUID uuid = UUID.fromString(str);
+						team.teammates.add(uuid);
+					}
+					this.teams.add(team);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}
