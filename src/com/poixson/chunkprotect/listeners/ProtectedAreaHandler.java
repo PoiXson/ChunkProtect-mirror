@@ -78,6 +78,11 @@ public class ProtectedAreaHandler implements Listener {
 				if (dao == null)
 					return false;
 				dao.sendOwnerMessage(ChatColor.RED + "Your beacon has been broken!\nThe area is now unprotected!");
+				{
+					final TeamDAO team = this.plugin.getOwnTeam(dao.owner);
+					if (team != null)
+						team.sendTeamMessage(ChatColor.RED + "Your team beacon has been broken!\nThe area is now unprotected!");
+				}
 				if (!dao.isOwner(player))
 					player.sendMessage(ChatColor.RED + "Area protection broken!");
 			}

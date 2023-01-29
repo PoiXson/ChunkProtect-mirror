@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 
 public class TeamDAO {
@@ -59,6 +60,16 @@ public class TeamDAO {
 				list.add(player.getName());
 		}
 		return list.toArray(new String[0]);
+	}
+
+
+
+	public void sendTeamMessage(final String msg) {
+		for (final UUID uuid : this.teammates) {
+			final Player player = Bukkit.getPlayer(uuid);
+			if (player != null)
+				player.sendMessage(msg);
+		}
 	}
 
 
