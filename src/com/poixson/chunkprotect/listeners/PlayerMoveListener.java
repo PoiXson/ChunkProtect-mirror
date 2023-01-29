@@ -69,10 +69,11 @@ public class PlayerMoveListener implements Listener {
 			}
 			// beacon area
 			{
-				final BeaconDAO dao = this.plugin.getProtectedArea(to);
+				final BeaconDAO dao = this.plugin.getBeaconArea(to);
 				final BeaconDAO daoLast = this.inarea.get(uuid);
 				if (dao == null) this.inarea.remove(uuid);
 				else             this.inarea.put(uuid, dao);
+				// area changed
 				if (!Utils.EqualsBeaconDAO(dao, daoLast))
 					this.msgEnteredArea(player, daoLast);
 			}

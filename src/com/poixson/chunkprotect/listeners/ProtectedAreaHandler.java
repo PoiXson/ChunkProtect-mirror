@@ -18,6 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import com.poixson.chunkprotect.BeaconDAO;
 import com.poixson.chunkprotect.ChunkProtectPlugin;
 import com.poixson.chunkprotect.TeamDAO;
+import com.poixson.utils.Utils;
 
 
 public class ProtectedAreaHandler implements Listener {
@@ -67,7 +68,7 @@ public class ProtectedAreaHandler implements Listener {
 					return true;
 				}
 				// check protected area
-				final BeaconDAO dao = this.plugin.getBeaconArea(loc);
+				final BeaconDAO dao = this.plugin.getBeaconNear(loc);
 				if (dao != null) {
 					player.sendMessage(ChatColor.RED + "Can't place a beacon here");
 					return true;
@@ -90,10 +91,10 @@ public class ProtectedAreaHandler implements Listener {
 		}
 		// check protected area
 		{
-			final BeaconDAO dao = this.plugin.getProtectedArea(loc);
+			final BeaconDAO dao = this.plugin.getBeaconArea(loc);
 			if (dao != null) {
 				final UUID uuid = player.getUniqueId();
-				if (!dao.isBuildAllowed(uuid)) {
+				if (!Utils.EqualsUUID(dao.owner, uuid)) {
 					final TeamDAO team = this.plugin.findTeam(uuid);
 					if (!team.isOnTeam(uuid)) {
 						player.sendMessage(ChatColor.RED + "You cannot build here");

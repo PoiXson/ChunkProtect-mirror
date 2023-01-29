@@ -369,18 +369,20 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 
 	public boolean isSpawnArea(final Location loc) {
-		int spawnX = 0;
-		int spawnZ = 0;
-		final Location spawn = loc.getWorld().getSpawnLocation();
-		if (spawn != null) {
-			spawnX = spawn.getBlockX();
-			spawnZ = spawn.getBlockZ();
-		}
+		final AreaShape shape = this.getAreaShape();
 		final int radius = this.config.get().getInt("Spawn Radius");
-		final int x = Math.abs( spawnX - loc.getBlockX() );
-		final int z = Math.abs( spawnZ - loc.getBlockZ() );
-		final int distance = (int) Math.sqrt( Math.pow(x, 2) + Math.pow(z, 2) );
-		return (distance <= radius);
+		Location spawn = loc.getWorld().getSpawnLocation();
+		if (spawn == null)
+			spawn = loc.getWorld().getBlockAt(0, 0, 0).getLocation();
+		return Utils.WithinArea(shape, radius, spawn, loc);
+	}
+	public boolean isSpawnAreaNear(final Location loc) {
+		final AreaShape shape = this.getAreaShape();
+		final int radius = this.config.get().getInt("Spawn Radius") + this.getMaxAreaSize();
+		Location spawn = loc.getWorld().getSpawnLocation();
+		if (spawn == null)
+			spawn = loc.getWorld().getBlockAt(0, 0, 0).getLocation();
+		return Utils.WithinArea(shape, radius, spawn, loc);
 	}
 
 	public BeaconDAO getBeaconDAO(final Location loc) {
@@ -388,32 +390,31 @@ public class ChunkProtectPlugin extends JavaPlugin {
 				.beacons.get(loc);
 	}
 
-	public BeaconDAO getBeaconArea(final Location loc) {
+	public BeaconDAO getBeaconNear(final Location loc) {
 		final AreaShape shape = this.getAreaShape();
-		final int distance = this.getMaxAreaSize();
+		final int radius = 2 * this.getMaxAreaSize();
 		final Iterator<Entry<Location, BeaconDAO>> it =
-			this.beaconHandler.get()
-				.beacons.entrySet().iterator();
+				this.beaconHandler.get()
+					.beacons.entrySet().iterator();
 		while (it.hasNext()) {
 			final Entry<Location, BeaconDAO> entry = it.next();
 			final BeaconDAO dao = entry.getValue();
-			if (dao.isProtectedArea(loc, shape, distance))
+			if (Utils.WithinArea(shape, radius, dao.loc, loc))
 				return dao;
 		}
 		return null;
 	}
 
-	public BeaconDAO getProtectedArea(final Location loc) {
+	public BeaconDAO getBeaconArea(final Location loc) {
 		final AreaShape shape = this.getAreaShape();
-		int distance;
 		final Iterator<Entry<Location, BeaconDAO>> it =
 			this.beaconHandler.get()
 				.beacons.entrySet().iterator();
 		while (it.hasNext()) {
 			final Entry<Location, BeaconDAO> entry = it.next();
 			final BeaconDAO dao = entry.getValue();
-			distance = this.getProtectedAreaRadius(dao.tier);
-			if (dao.isProtectedArea(loc, shape, distance))
+			final int radius = this.getProtectedAreaRadius(dao.tier);
+			if (Utils.WithinArea(shape, radius, dao.loc, loc))
 				return dao;
 		}
 		return null;

@@ -46,4 +46,21 @@ public final class Utils {
 
 
 
+	public static boolean WithinArea(final AreaShape shape, final int radius,
+			final Location locA, final Location locB) {
+		if (radius <= 0)                    return false;
+		if (!Utils.EqualsWorld(locA, locB)) return false;
+		if (locA == null || locB == null)   return false;
+		final int distX = Math.abs( locA.getBlockX() - locB.getBlockX() );
+		final int distZ = Math.abs( locA.getBlockZ() - locB.getBlockZ() );
+		switch (shape) {
+		case CIRCLE: return (radius >= Math.sqrt( Math.pow(distX, 2) + Math.pow(distZ, 2) ));
+		case SQUARE: return (radius >= distX && radius >= distZ);
+		default: throw new RuntimeException("Unknown area shape: " + shape.toString());
+		}
+
+	}
+
+
+
 }
