@@ -73,23 +73,44 @@ public class PlayerMoveListener implements Listener {
 				final BeaconDAO daoLast = this.inarea.get(uuid);
 				if (dao == null) this.inarea.remove(uuid);
 				else             this.inarea.put(uuid, dao);
-				if (!Utils.EqualsBeaconDAO(dao, daoLast)) {
-					if (dao == null) {
-						player.sendMessage(ChatColor.AQUA + "You left the protected area");
-					} else
-						if (dao.isOwner(player)) {
-							player.sendMessage(ChatColor.AQUA + "Welcome home");
-						} else {
-							final String name = dao.getOwnerName();
-						if (name == null || name.isEmpty()) {
-							player.sendMessage(ChatColor.AQUA + "You entered a protected area");
-						} else {
-							player.sendMessage(ChatColor.AQUA + "You entered the area of: " + name);
-						}
-					}
+				if (!Utils.EqualsBeaconDAO(dao, daoLast))
+					this.msgEnteredArea(player, daoLast);
+			}
+		}
+	}
+
+	protected void msgEnteredArea(final Player player, final BeaconDAO dao) {
+		// left area
+		if (dao == null) {
+			player.sendMessage(ChatColor.AQUA + "You left the protected area");
+			return;
+		}
+		// owner
+		if (dao.isOwner(player)) {
+			player.sendMessage(ChatColor.AQUA + "Welcome home");
+			return;
+		}
+		// team
+		{
+			final TeamDAO team = this.plugin.getOwnTeam(dao.owner);
+			if (team != null) {
+				final String nameTeam = team.name.get();
+				if (nameTeam != null && !nameTeam.isEmpty()) {
+					player.sendMessage(ChatColor.AQUA + "You entered the area of team: " + nameTeam);
+					return;
 				}
 			}
 		}
+		// player
+		{
+			final String nameOwner = dao.getOwnerName();
+			if (nameOwner != null && !nameOwner.isEmpty()) {
+				player.sendMessage(ChatColor.AQUA + "You entered the area of: " + nameOwner);
+				return;
+			}
+		}
+		// generic
+		player.sendMessage(ChatColor.AQUA + "You entered a protected area");
 	}
 
 
