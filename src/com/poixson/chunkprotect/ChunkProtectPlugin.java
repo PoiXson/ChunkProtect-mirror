@@ -392,11 +392,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	public BeaconDAO getBeaconArea(final Location loc) {
 		final AreaShape shape = this.getAreaShape();
-		int distance = 0;
-		for (final int dist : this.areaSizes.get()) {
-			if (distance < dist)
-				distance = dist;
-		}
+		final int distance = this.getMaxAreaSize();
 		final Iterator<Entry<Location, BeaconDAO>> it =
 			this.beaconHandler.get()
 				.beacons.entrySet().iterator();
@@ -439,6 +435,15 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			return 0;
 		}
 		return sizes[tier];
+	}
+
+	public int getMaxAreaSize() {
+		int distance = 0;
+		for (final int dist : this.areaSizes.get()) {
+			if (distance < dist)
+				distance = dist;
+		}
+		return distance;
 	}
 
 
