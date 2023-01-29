@@ -286,9 +286,9 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		{
 			final File file = new File(this.getDataFolder(), "teams.yml");
 			final FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
-			for (final String name : cfg.getKeys(false)) {
-				final ConfigurationSection c = cfg.getConfigurationSection(name);
-				final UUID owner = UUID.fromString(c.getString("Owner"));
+			for (final String key : cfg.getKeys(false)) {
+				final ConfigurationSection c = cfg.getConfigurationSection(key);
+				final UUID owner = UUID.fromString(key);
 				final TeamDAO team = new TeamDAO(owner);
 				final String teamName = c.getString("Team Name");
 				team.name.set(teamName);
