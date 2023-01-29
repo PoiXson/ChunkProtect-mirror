@@ -75,7 +75,7 @@ public class PlayerMoveListener implements Listener {
 				else             this.inarea.put(uuid, dao);
 				// area changed
 				if (!Utils.EqualsBeaconDAO(dao, daoLast))
-					this.msgEnteredArea(player, daoLast);
+					this.msgEnteredArea(player, dao);
 			}
 		}
 	}
