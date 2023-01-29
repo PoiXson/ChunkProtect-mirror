@@ -84,17 +84,14 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 				}
 				if (num > 1) {
 					final TeamDAO team = this.plugin.getOwnTeam(uuid);
-					team.setTeamName(args[1].trim());
-					sender.sendMessage(ChatColor.AQUA + "Your team name is changed to: " + args[1]);
-				} else {
-					final String name = this.plugin.getTeamName(player.getUniqueId());
-					if (name == null || name.isEmpty()) {
-						sender.sendMessage(ChatColor.AQUA + "Your team doesn't have a name");
-					} else {
-						sender.sendMessage(ChatColor.AQUA + "Your team name is: " + name);
+					final String name = args[1].trim();
+					if (!name.isEmpty()) {
+						team.setTeamName(name);
+						sender.sendMessage(ChatColor.AQUA + "Your team name is changed to: " + name);
+						return true;
 					}
 				}
-				return true;
+				break;
 			}
 			case "list": {
 				if (player == null) {
@@ -121,7 +118,16 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 			default: break;
 			}
 		}
-		return false;
+		// team name
+		{
+			final String name = this.plugin.getTeamName(player.getUniqueId());
+			if (name == null || name.isEmpty()) {
+				sender.sendMessage(ChatColor.AQUA + "Your team doesn't have a name");
+			} else {
+				sender.sendMessage(ChatColor.AQUA + "Your team name is: " + name);
+			}
+		}
+		return true;
 	}
 
 
