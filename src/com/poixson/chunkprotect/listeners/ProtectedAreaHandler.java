@@ -63,7 +63,7 @@ public class ProtectedAreaHandler implements Listener {
 		if (Material.BEACON.equals(type)) {
 			// place beacon
 			if (placebreak) {
-				if (this.plugin.isSpawnArea(loc)) {
+				if (this.plugin.isSpawnAreaNear(loc)) {
 					player.sendMessage(ChatColor.RED + "Can't place a beacon in the spawn area");
 					return true;
 				}
