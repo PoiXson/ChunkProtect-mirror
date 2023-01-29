@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -46,11 +47,11 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 				@SuppressWarnings("deprecation")
 				final OfflinePlayer p = Bukkit.getOfflinePlayer(args[1]);
 				if (p == null) {
-					sender.sendMessage("Unknown player: " + args[1]);
+					sender.sendMessage(ChatColor.AQUA + "Unknown player: " + args[1]);
 					return true;
 				}
 				team.addPlayer(p.getUniqueId());
-				sender.sendMessage("Added player to your team: " + args[1]);
+				sender.sendMessage(ChatColor.AQUA + "Added player to your team: " + args[1]);
 				return true;
 			}
 			case "remove": {
@@ -61,14 +62,14 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 				@SuppressWarnings("deprecation")
 				final OfflinePlayer p = Bukkit.getOfflinePlayer(args[1]);
 				if (p == null) {
-					sender.sendMessage("Player not found: " + args[1]);
+					sender.sendMessage(ChatColor.AQUA + "Player not found: " + args[1]);
 					return true;
 				}
 				final TeamDAO team = this.plugin.getOwnTeam(uuid);
 				if (team.removePlayer(p.getUniqueId())) {
-					sender.sendMessage("Removed player from your team: " + args[1]);
+					sender.sendMessage(ChatColor.AQUA + "Removed player from your team: " + args[1]);
 				} else {
-					sender.sendMessage("Player is not on your team: " + args[1]);
+					sender.sendMessage(ChatColor.AQUA + "Player is not on your team: " + args[1]);
 				}
 				return true;
 			}
@@ -85,13 +86,13 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 				if (num > 1) {
 					final TeamDAO team = this.plugin.getOwnTeam(uuid);
 					team.setTeamName(args[1].trim());
-					sender.sendMessage("Your team name is changed to: " + args[1]);
+					sender.sendMessage(ChatColor.AQUA + "Your team name is changed to: " + args[1]);
 				} else {
 					final String name = this.plugin.getTeamName(player.getUniqueId());
 					if (name == null || name.isEmpty()) {
-						sender.sendMessage("Your team doesn't have a name");
+						sender.sendMessage(ChatColor.AQUA + "Your team doesn't have a name");
 					} else {
-						sender.sendMessage("Your team name is: " + name);
+						sender.sendMessage(ChatColor.AQUA + "Your team name is: " + name);
 					}
 				}
 				return true;
@@ -103,7 +104,7 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 				}
 				final TeamDAO team = this.plugin.findTeam(uuid);
 				if (team == null) {
-					sender.sendMessage("You're not on a team");
+					sender.sendMessage(ChatColor.AQUA + "You're not on a team");
 				} else {
 					final String ownerName = team.getOwnerName();
 					final String[] playerNames = team.getTeamPlayerNames();
