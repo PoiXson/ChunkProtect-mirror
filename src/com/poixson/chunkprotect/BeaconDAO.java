@@ -1,4 +1,4 @@
-package com.poixson.chunkprotect.listeners;
+package com.poixson.chunkprotect;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +13,6 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
-
-import com.poixson.chunkprotect.Utils;
 
 
 public class BeaconDAO implements ConfigurationSerializable {

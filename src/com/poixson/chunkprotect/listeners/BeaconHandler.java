@@ -21,6 +21,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.poixson.chunkprotect.BeaconDAO;
 import com.poixson.chunkprotect.ChunkProtectPlugin;
 import com.poixson.chunkprotect.Utils;
 

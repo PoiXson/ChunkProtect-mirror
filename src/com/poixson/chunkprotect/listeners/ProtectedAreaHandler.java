@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.poixson.chunkprotect.BeaconDAO;
 import com.poixson.chunkprotect.ChunkProtectPlugin;
 import com.poixson.chunkprotect.TeamDAO;
 

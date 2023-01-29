@@ -14,7 +14,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import com.poixson.chunkprotect.BeaconDAO;
 import com.poixson.chunkprotect.ChunkProtectPlugin;
+import com.poixson.chunkprotect.TeamDAO;
 import com.poixson.chunkprotect.Utils;
 
 

@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import com.poixson.chunkprotect.BeaconDAO;
+
 
 public class BeaconEvent extends Event {
 

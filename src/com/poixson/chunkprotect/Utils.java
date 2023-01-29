@@ -7,8 +7,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
-import com.poixson.chunkprotect.listeners.BeaconDAO;
-
 
 public final class Utils {
 	private Utils() {}

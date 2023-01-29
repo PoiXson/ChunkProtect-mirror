@@ -1,4 +1,4 @@
-package com.poixson.chunkprotect.listeners;
+package com.poixson.chunkprotect;
 
 
 public enum AreaShape {

@@ -7,6 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
+import com.poixson.chunkprotect.BeaconDAO;
 import com.poixson.chunkprotect.ChunkProtectPlugin;
 
 
