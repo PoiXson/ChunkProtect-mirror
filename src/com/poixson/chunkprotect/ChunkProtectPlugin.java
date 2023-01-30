@@ -35,12 +35,13 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	public static final Logger log = Logger.getLogger("Minecraft");
 	public static final String LOG_PREFIX = "[ChunkProtect] ";
 
+//TODO: use arrays for layer block types and radius
 	public static final AreaShape DEFAULT_AREA_SHAPE = AreaShape.SQUARE;
 	public static final int DEFAULT_SPAWN_RADIUS = 56;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER1 = 8;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 24;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 40;
-	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 80;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 56;
 	public static final Map<String, Integer> DEFAULT_STARTING_KIT = Map.of(
 		"BEACON",     Integer.valueOf(1),
 		"IRON_BLOCK", Integer.valueOf(9)

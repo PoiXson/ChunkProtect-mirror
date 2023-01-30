@@ -58,7 +58,7 @@ public class ProtectedAreaHandler implements Listener {
 	protected boolean handleBlockEvent(final boolean placebreak,
 			final Block block, final Player player) {
 		final Material type = block.getType();
-		final Location loc = block.getLocation();
+		final Location loc  = block.getLocation();
 		// place/break beacon
 		if (Material.BEACON.equals(type)) {
 			// place beacon

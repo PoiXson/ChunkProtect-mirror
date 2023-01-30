@@ -145,10 +145,10 @@ public class BeaconHandler extends BukkitRunnable implements Listener {
 			}
 		}
 		// primary effect changed
-		if (!Utils.EqualsPotionEffect(dao.primary, dao.primaryLast))
+		if (!Utils.EqualsPotionEffect(dao.primary, dao.lastPrimary))
 			this.pm.callEvent(new BeaconEvent(BeaconEventType.PRIMARY_CHANGED, dao));
 		// secondary effect changed
-		if (!Utils.EqualsPotionEffect(dao.secondary, dao.secondaryLast))
+		if (!Utils.EqualsPotionEffect(dao.secondary, dao.lastSecondary))
 			this.pm.callEvent(new BeaconEvent(BeaconEventType.SECONDARY_CHANGED, dao));
 		return true;
 	}

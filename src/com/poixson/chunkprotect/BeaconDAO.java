@@ -26,8 +26,8 @@ public class BeaconDAO implements ConfigurationSerializable {
 	public PotionEffect primary   = null;
 	public PotionEffect secondary = null;
 
-	public transient PotionEffect primaryLast   = null;
-	public transient PotionEffect secondaryLast = null;
+	public transient PotionEffect lastPrimary   = null;
+	public transient PotionEffect lastSecondary = null;
 
 
 
@@ -43,8 +43,8 @@ public class BeaconDAO implements ConfigurationSerializable {
 		if (!Material.BEACON.equals(block.getType()))
 			return false;
 		this.tierLast      = this.tier;
-		this.primaryLast   = this.primary;
-		this.secondaryLast = this.secondary;
+		this.lastPrimary   = this.primary;
+		this.lastSecondary = this.secondary;
 		final Beacon beacon = (Beacon) block.getState();
 		this.tier      = beacon.getTier();
 		this.primary   = beacon.getPrimaryEffect();
