@@ -42,6 +42,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 24;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 40;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER4 = 56;
+	public static final int DEFAULT_PROTECTED_RADIUS_TIER5 = 72;
 	public static final Map<String, Integer> DEFAULT_STARTING_KIT = Map.of(
 		"BEACON",     Integer.valueOf(1),
 		"IRON_BLOCK", Integer.valueOf(9)
@@ -264,6 +265,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 					cfg.getInt("Protect Area Tier 2"),
 					cfg.getInt("Protect Area Tier 3"),
 					cfg.getInt("Protect Area Tier 4"),
+					cfg.getInt("Protect Area Tier 5"),
 				};
 				this.areaSizes.set(sizes);
 			}
@@ -373,6 +375,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		cfg.addDefault("Protect Area Tier 2", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER2));
 		cfg.addDefault("Protect Area Tier 3", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER3));
 		cfg.addDefault("Protect Area Tier 4", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER4));
+		cfg.addDefault("Protect Area Tier 5", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER5));
 	}
 
 
@@ -441,7 +444,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	}
 
 	public int getProtectedAreaRadius(final int tier) {
-		if (tier < 0 || tier > 4) throw new RuntimeException("Tier value is out of range: " + Integer.toString(tier));
+		if (tier < 0 || tier > 5) throw new RuntimeException("Tier value is out of range: " + Integer.toString(tier));
 		final int[] sizes = this.areaSizes.get();
 		if (sizes == null) {
 			log.warning(LOG_PREFIX + "protected area sizes not set!");
