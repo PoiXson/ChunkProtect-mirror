@@ -38,6 +38,11 @@ public class ChunkProtectPlugin extends JavaPlugin {
 //TODO: use arrays for layer block types and radius
 	public static final AreaShape DEFAULT_AREA_SHAPE = AreaShape.SQUARE;
 	public static final int DEFAULT_SPAWN_RADIUS = 56;
+	public static final Material DEFAULT_BLOCK_TYPE_TIER1 = Material.IRON_BLOCK;
+	public static final Material DEFAULT_BLOCK_TYPE_TIER2 = Material.GOLD_BLOCK;
+	public static final Material DEFAULT_BLOCK_TYPE_TIER3 = Material.DIAMOND_BLOCK;
+	public static final Material DEFAULT_BLOCK_TYPE_TIER4 = Material.EMERALD_BLOCK;
+	public static final Material DEFAULT_BLOCK_TYPE_TIER5 = Material.NETHERITE_BLOCK;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER1 = 8;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER2 = 24;
 	public static final int DEFAULT_PROTECTED_RADIUS_TIER3 = 40;
@@ -48,11 +53,14 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		"IRON_BLOCK", Integer.valueOf(9)
 	);
 
+	private static final AtomicReference<ChunkProtectPlugin> instance = new AtomicReference<ChunkProtectPlugin>(null);
+
 	// configs
 	protected final AtomicReference<FileConfiguration> config     = new AtomicReference<FileConfiguration>(null);
 	protected final AtomicReference<AreaShape>         areaShape  = new AtomicReference<AreaShape>(null);
 	protected final AtomicReference<int[]>             areaSizes  = new AtomicReference<int[]>(null);
 	protected final AtomicReference<FileConfiguration> cfgBeacons = new AtomicReference<FileConfiguration>(null);
+	protected final AtomicReference<Material[]>        layertypes = new AtomicReference<Material[]>(null);
 
 	// listeners
 	protected final AtomicReference<CommandsHandler>      commands       = new AtomicReference<CommandsHandler>(null);
@@ -78,6 +86,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		instance.set(this);
 		// starting kit handler
 		{
 			final StartingKit kit = new StartingKit(this);
@@ -190,6 +199,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		}
 		// stop listeners
 		HandlerList.unregisterAll(this);
+		instance.set(null);
 	}
 
 
@@ -371,11 +381,44 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		cfg.addDefault("Starting Kit", DEFAULT_STARTING_KIT);
 		cfg.addDefault("Area Shape", DEFAULT_AREA_SHAPE.toString());
 		cfg.addDefault("Spawn Radius", Integer.valueOf(DEFAULT_SPAWN_RADIUS));
+		cfg.addDefault("Block Type Tier 1", DEFAULT_BLOCK_TYPE_TIER1.toString());
+		cfg.addDefault("Block Type Tier 2", DEFAULT_BLOCK_TYPE_TIER2.toString());
+		cfg.addDefault("Block Type Tier 3", DEFAULT_BLOCK_TYPE_TIER3.toString());
+		cfg.addDefault("Block Type Tier 4", DEFAULT_BLOCK_TYPE_TIER4.toString());
+		cfg.addDefault("Block Type Tier 5", DEFAULT_BLOCK_TYPE_TIER5.toString());
 		cfg.addDefault("Protect Area Tier 1", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER1));
 		cfg.addDefault("Protect Area Tier 2", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER2));
 		cfg.addDefault("Protect Area Tier 3", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER3));
 		cfg.addDefault("Protect Area Tier 4", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER4));
 		cfg.addDefault("Protect Area Tier 5", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER5));
+	}
+
+
+
+	public static Material[] GetBeaconLayerTypes() {
+		final ChunkProtectPlugin plugin = instance.get();
+		return plugin.getBeaconLayerTypes();
+	}
+	public Material[] getBeaconLayerTypes() {
+		// cached
+		{
+			final Material[] types = this.layertypes.get();
+			if (types != null)
+				return types;
+		}
+		// types list
+		{
+			final FileConfiguration cfg = this.config.get();
+			final LinkedList<Material> list = new LinkedList<Material>();
+			list.add(Material.valueOf( cfg.getString("Block Type Tier 1") ));
+			list.add(Material.valueOf( cfg.getString("Block Type Tier 2") ));
+			list.add(Material.valueOf( cfg.getString("Block Type Tier 3") ));
+			list.add(Material.valueOf( cfg.getString("Block Type Tier 4") ));
+			list.add(Material.valueOf( cfg.getString("Block Type Tier 5") ));
+			final Material[] types = list.toArray(new Material[0]);
+			this.layertypes.set(types);
+			return types;
+		}
 	}
 
 
@@ -430,7 +473,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		while (it.hasNext()) {
 			final Entry<Location, BeaconDAO> entry = it.next();
 			final BeaconDAO dao = entry.getValue();
-			final int radius = this.getProtectedAreaRadius(dao.tier);
+			final int radius = this.getProtectedAreaRadius(dao.tierValid);
 			if (Utils.WithinArea(shape, radius, dao.loc, loc))
 				return dao;
 		}

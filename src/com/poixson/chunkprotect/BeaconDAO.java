@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -20,8 +21,9 @@ public class BeaconDAO implements ConfigurationSerializable {
 	public final Location loc;
 	public final UUID owner;
 
-	public           int tier     = 0;
-	public transient int tierLast = 0;
+	public           int tier      = 0;
+	public transient int tierLast  = 0;
+	public transient int tierValid = 0;
 
 	public PotionEffect primary   = null;
 	public PotionEffect secondary = null;
@@ -49,7 +51,27 @@ public class BeaconDAO implements ConfigurationSerializable {
 		this.tier      = beacon.getTier();
 		this.primary   = beacon.getPrimaryEffect();
 		this.secondary = beacon.getSecondaryEffect();
+		final Material[] layers = ChunkProtectPlugin.GetBeaconLayerTypes();
+		this.tierValid = this.validateBlockLayers(this, layers);
 		return true;
+	}
+
+	protected int validateBlockLayers(final BeaconDAO dao, final Material[] types) {
+		final int tiers = dao.tier + (dao.tier==4 ? 1 : 0);
+		final World world = dao.loc.getWorld();
+		final int x = dao.loc.getBlockX();
+		final int y = dao.loc.getBlockY();
+		final int z = dao.loc.getBlockZ();
+		for (int t=1; t<=tiers; t++) {
+			for (int tz=0-t; tz<=t; tz++) {
+				for (int tx=0-t; tx<=t; tx++) {
+					final Block block = world.getBlockAt(x+tx, y-t, z+tz);
+					if (!types[t-1].equals(block.getType()))
+						return t - 1;
+				}
+			}
+		}
+		return tiers;
 	}
 
 
