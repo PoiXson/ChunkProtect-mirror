@@ -41,22 +41,18 @@ public class BeaconListener implements Listener {
 		switch (type) {
 		case ACTIVATED:
 		case TIER_CHANGED:
-			msg.append("This area is now protected (");
-			final int radius = this.plugin.getProtectedAreaRadius(dao.tier);
+			msg.append("This area is now protected (tier ")
+				.append(dao.tierValid)
+				.append(" | ");
+			final int radius = this.plugin.getProtectedAreaRadius(dao.tierValid);
 			final int diameter = radius * 2;
 			if (diameter % 16 == 0) {
 				final int diam = diameter / 16;
-				msg.append(String.format(
-					"%dx%d chunks",
-					Integer.valueOf(diam),
-					Integer.valueOf(diam)
-				));
+				msg.append(diam).append('x')
+					.append(diam).append(" chunks");
 			} else {
-				msg.append(String.format(
-					"%dx%d blocks",
-					Integer.valueOf(diameter),
-					Integer.valueOf(diameter)
-				));
+				msg.append(diameter).append('x')
+					.append(diameter).append(" blocks");
 			}
 			msg.append(')');
 			break;
