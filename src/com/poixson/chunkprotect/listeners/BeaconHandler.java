@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,6 +28,8 @@ import com.poixson.chunkprotect.Utils;
 
 
 public class BeaconHandler extends BukkitRunnable implements Listener {
+	private static final Logger log        = ChunkProtectPlugin.log;
+	private static final String LOG_PREFIX = ChunkProtectPlugin.LOG_PREFIX;
 
 	protected final ChunkProtectPlugin plugin;
 	protected final PluginManager pm;
@@ -54,9 +57,9 @@ public class BeaconHandler extends BukkitRunnable implements Listener {
 					this.beacons.put(dao.loc, dao);
 			}
 		}
-		ChunkProtectPlugin.log.info(String.format(
+		log.info(String.format(
 			"%sLoaded %d chunk protect beacons",
-			ChunkProtectPlugin.LOG_PREFIX,
+			LOG_PREFIX,
 			Integer.valueOf(this.beacons.size())
 		));
 	}
@@ -105,6 +108,7 @@ public class BeaconHandler extends BukkitRunnable implements Listener {
 			final Location loc = block.getLocation();
 			final BeaconDAO dao = this.beacons.get(loc);
 			if (dao != null) {
+				log.info(LOG_PREFIX + "Beacon broken at: " + dao.loc.toString());
 				this.pm.callEvent(new BeaconEvent(BeaconEventType.BROKEN, dao));
 				this.beacons.remove(loc);
 			}
@@ -123,6 +127,7 @@ public class BeaconHandler extends BukkitRunnable implements Listener {
 			dao = entry.getValue();
 			if (!this.runBeacon(dao)) {
 				it.remove();
+				log.info(LOG_PREFIX + "Beacon broken at: " + dao.loc.toString());
 				this.pm.callEvent(new BeaconEvent(BeaconEventType.BROKEN, dao));
 			}
 		}
@@ -136,11 +141,14 @@ public class BeaconHandler extends BukkitRunnable implements Listener {
 		// tier changed
 		if (dao.tier != dao.tierLast) {
 			if (dao.tier > 0 && dao.tierLast == 0) {
+				log.info(LOG_PREFIX + "Beacon activated at: " + dao.loc.toString());
 				this.pm.callEvent(new BeaconEvent(BeaconEventType.ACTIVATED, dao));
 			} else
 			if (dao.tier == 0 && dao.tierLast > 0) {
+				log.info(LOG_PREFIX + "Beacon deactivated at: " + dao.loc.toString());
 				this.pm.callEvent(new BeaconEvent(BeaconEventType.DEACTIVATED, dao));
 			} else {
+				log.info(LOG_PREFIX + "Beacon changed at: " + dao.loc.toString());
 				this.pm.callEvent(new BeaconEvent(BeaconEventType.TIER_CHANGED, dao));
 			}
 		}
