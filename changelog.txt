@@ -1,6 +1,19 @@
 ChunkProtect - Claim protected chunks with a beacon
 
 
+2023-01-30 - 0.1.16
+===================
+* added starting kit
+* added /team commands
+* added support for beacon layers with specific block types
+* added support for 5 beacon layers
+* changed default protected area tiers
+* fixed bugs with protected area shapes
+* fixed preventing beacons near spawn
+* improved messages to players
+* other fixes and improvements
+
+
 2023-01-20 - 0.1.7
 ==================
 * initial release
