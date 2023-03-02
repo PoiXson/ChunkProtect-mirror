@@ -90,7 +90,7 @@ public class ProtectedAreaHandler implements Listener {
 			return false;
 		}
 		// check protected area
-		{
+		if (!player.hasPermission("chunkprotect.bypass")) {
 			final BeaconDAO dao = this.plugin.getBeaconArea(loc);
 			if (dao != null) {
 				final UUID uuid = player.getUniqueId();

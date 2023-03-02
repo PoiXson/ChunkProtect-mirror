@@ -14,3 +14,28 @@ commands:
     teams:
         description: "Allow other players to join your team"
         usage: "/teams <name/add/remove/list>"
+permissions:
+    chunkprotect.*:
+        default: op
+        description: Gives access to all chunk protect commands
+    chunkprotect.bypass:
+        default: false
+        description: Bypass chunk protection
+    chunkprotect.team.add:
+        default: true
+        description: Gives access to /chunkprotect add team command
+    chunkprotect.team.remove:
+        default: true
+        description: Gives access to /chunkprotect remove team command
+    chunkprotect.team.name:
+        default: true
+        description: Gives access to /chunkprotect name team command
+    chunkprotect.team.name.change:
+        default: true
+        description: Gives access to change the team name
+    chunkprotect.team.list.own:
+        default: true
+        description: Gives access to /chunkprotect list command
+    chunkprotect.team.list.all:
+        default: op
+        description: Gives access to /chunkprotect list command
