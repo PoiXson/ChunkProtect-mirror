@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
@@ -60,6 +61,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 	protected final AtomicReference<AreaShape>         areaShape  = new AtomicReference<AreaShape>(null);
 	protected final AtomicReference<int[]>             areaSizes  = new AtomicReference<int[]>(null);
 	protected final AtomicReference<FileConfiguration> cfgBeacons = new AtomicReference<FileConfiguration>(null);
+	protected final AtomicBoolean                    solidlayered = new AtomicBoolean(false);
 	protected final AtomicReference<Material[]>        layertypes = new AtomicReference<Material[]>(null);
 
 	// listeners
@@ -267,6 +269,18 @@ public class ChunkProtectPlugin extends JavaPlugin {
 					this.areaShape.set(shape);
 				}
 			}
+			// beacon solid/layered
+			{
+				final String style = cfg.getString("Solid or Layered");
+				switch (style) {
+				case "solid":   this.solidlayered.set(true);  break;
+				case "layered": this.solidlayered.set(false); break;
+				default:
+					LOG.warning(LOG_PREFIX + "Unknown solid/layered in config: " + style + " (defaulting to solid)");
+					this.solidlayered.set(true);
+					break;
+				}
+			}
 			// protected area radius
 			{
 				final int[] sizes = new int[] {
@@ -381,6 +395,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		cfg.addDefault("Starting Kit", DEFAULT_STARTING_KIT);
 		cfg.addDefault("Area Shape", DEFAULT_AREA_SHAPE.toString());
 		cfg.addDefault("Spawn Radius", Integer.valueOf(DEFAULT_SPAWN_RADIUS));
+		cfg.addDefault("Solid or Layered", "solid");
 		cfg.addDefault("Block Type Tier 1", DEFAULT_BLOCK_TYPE_TIER1.toString());
 		cfg.addDefault("Block Type Tier 2", DEFAULT_BLOCK_TYPE_TIER2.toString());
 		cfg.addDefault("Block Type Tier 3", DEFAULT_BLOCK_TYPE_TIER3.toString());
@@ -391,6 +406,16 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		cfg.addDefault("Protect Area Tier 3", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER3));
 		cfg.addDefault("Protect Area Tier 4", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER4));
 		cfg.addDefault("Protect Area Tier 5", Integer.valueOf(DEFAULT_PROTECTED_RADIUS_TIER5));
+	}
+
+
+
+	public static boolean GetSolidOrLayered() {
+		final ChunkProtectPlugin plugin = instance.get();
+		return plugin.isSolidOrLayered();
+	}
+	public boolean isSolidOrLayered() {
+		return this.solidlayered.get();
 	}
 
 

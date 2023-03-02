@@ -52,25 +52,47 @@ public class BeaconDAO implements ConfigurationSerializable {
 		this.primary   = beacon.getPrimaryEffect();
 		this.secondary = beacon.getSecondaryEffect();
 		final Material[] layers = ChunkProtectPlugin.GetBeaconLayerTypes();
-		this.tierValid = this.validateBlockLayers(this, layers);
+		final boolean solidlayered = ChunkProtectPlugin.GetSolidOrLayered();
+		this.tierValid = this.validateBlockLayers(this, layers, solidlayered);
 		return true;
 	}
 
-	protected int validateBlockLayers(final BeaconDAO dao, final Material[] types) {
+	protected int validateBlockLayers(final BeaconDAO dao, final Material[] types, final boolean solidlayered) {
 		final int tiers = dao.tier + (dao.tier==4 ? 1 : 0);
 		final World world = dao.loc.getWorld();
 		final int x = dao.loc.getBlockX();
 		final int y = dao.loc.getBlockY();
 		final int z = dao.loc.getBlockZ();
+		int solid_tier = -1;
 		for (int t=1; t<=tiers; t++) {
 			for (int tz=0-t; tz<=t; tz++) {
 				for (int tx=0-t; tx<=t; tx++) {
 					final Block block = world.getBlockAt(x+tx, y-t, z+tz);
-					if (!types[t-1].equals(block.getType()))
-						return t - 1;
+					// solid
+					if (solidlayered) {
+						if (solid_tier == -1) {
+							for (int i=0; i<types.length; i++) {
+								if (types[i].equals(block.getType())) {
+									solid_tier = i;
+									break;
+								}
+							}
+							if (solid_tier == -1)
+								return 0;
+						} else {
+							if (!types[solid_tier].equals(block.getType()))
+								return 0;
+						}
+					// layered
+					} else {
+						if (!types[t-1].equals(block.getType()))
+							return t - 1;
+					}
 				}
 			}
 		}
+		if (solidlayered)
+			return (solid_tier==-1 ? 0 : solid_tier+1);
 		return tiers;
 	}
 
