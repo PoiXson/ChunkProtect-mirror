@@ -1,5 +1,8 @@
 package com.poixson.chunkprotect;
 
+import static com.poixson.chunkprotect.ChunkProtectPlugin.LOG;
+import static com.poixson.chunkprotect.ChunkProtectPlugin.LOG_PREFIX;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -74,11 +77,7 @@ public class StartingKit implements Listener {
 			}
 		}
 		player.updateInventory();
-		ChunkProtectPlugin.log.info(String.format(
-			"%sGave starter kit to player: %s",
-			ChunkProtectPlugin.LOG_PREFIX,
-			player.getName()
-		));
+		LOG.info(String.format("%sGave starter kit to player: %s", LOG_PREFIX, player.getName()));
 	}
 
 

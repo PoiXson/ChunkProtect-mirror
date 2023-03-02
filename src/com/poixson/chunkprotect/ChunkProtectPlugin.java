@@ -33,7 +33,7 @@ import com.poixson.chunkprotect.listeners.ProtectedAreaHandler;
 
 
 public class ChunkProtectPlugin extends JavaPlugin {
-	public static final Logger log = Logger.getLogger("Minecraft");
+	public static final Logger LOG = Logger.getLogger("Minecraft");
 	public static final String LOG_PREFIX = "[ChunkProtect] ";
 
 //TODO: use arrays for layer block types and radius
@@ -220,7 +220,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			if (!path.isDirectory()) {
 				if (!path.mkdir())
 					throw new RuntimeException("Failed to create directory: " + path.toString());
-				log.info(LOG_PREFIX + "Created directory: " + path.toString());
+				LOG.info(LOG_PREFIX + "Created directory: " + path.toString());
 			}
 		}
 		// config.yml
@@ -239,12 +239,12 @@ public class ChunkProtectPlugin extends JavaPlugin {
 						try {
 							final Material type = Material.getMaterial(key);
 							if (type == null) {
-								log.severe(LOG_PREFIX + "Unknown kit item: " + key);
+								LOG.severe(LOG_PREFIX + "Unknown kit item: " + key);
 								continue;
 							}
 							final int qty = c.getInt(key);
 							if (qty <= 0) {
-								log.severe(LOG_PREFIX + "Invalid qty for kit item: " + key);
+								LOG.severe(LOG_PREFIX + "Invalid qty for kit item: " + key);
 								continue;
 							}
 							kit_handler.items.put(type, Integer.valueOf(qty));
@@ -252,7 +252,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 							e.printStackTrace();
 						}
 					}
-					log.info(String.format(
+					LOG.info(String.format(
 						"%sLoaded %d kit stacks",
 						LOG_PREFIX,
 						Integer.valueOf(kit_handler.items.size())
@@ -263,7 +263,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			{
 				final AreaShape shape = AreaShape.Get(cfg.getString("Area Shape"));
 				if (shape == null) {
-					log.warning("Area shape not set or invalid! Using default: " + DEFAULT_AREA_SHAPE.toString());
+					LOG.warning("Area shape not set or invalid! Using default: " + DEFAULT_AREA_SHAPE.toString());
 					this.areaShape.set(DEFAULT_AREA_SHAPE);
 				} else {
 					this.areaShape.set(shape);
@@ -515,7 +515,7 @@ public class ChunkProtectPlugin extends JavaPlugin {
 		if (tier < 0 || tier > 5) throw new RuntimeException("Tier value is out of range: " + Integer.toString(tier));
 		final int[] sizes = this.areaSizes.get();
 		if (sizes == null) {
-			log.warning(LOG_PREFIX + "protected area sizes not set!");
+			LOG.warning(LOG_PREFIX + "protected area sizes not set!");
 			return 0;
 		}
 		return sizes[tier];
