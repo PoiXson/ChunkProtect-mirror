@@ -1,6 +1,11 @@
 ChunkProtect - Claim protected chunks with a beacon
 
 
+2023-03-02 - 0.1.19
+===================
+* added solid/layered beacons to config.yml
+
+
 2023-01-30 - 0.1.16
 ===================
 * added starting kit
