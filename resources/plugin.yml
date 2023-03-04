@@ -14,6 +14,7 @@ commands:
     teams:
         description: "Allow other players to join your team"
         usage: "/teams <name/add/remove/list>"
+permission-message: "You don't have permission to use this command."
 permissions:
     chunkprotect.*:
         default: op
