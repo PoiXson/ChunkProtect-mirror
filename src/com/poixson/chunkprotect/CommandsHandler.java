@@ -41,6 +41,20 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 		final Player player = (sender instanceof Player ? (Player)sender : null);
 		final UUID uuid = (player == null ? null : player.getUniqueId());
 		final int num = args.length;
+		// team name
+		if (num == 0) {
+			if (!player.hasPermission("chunkprotect.team.name")) {
+				player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
+				return true;
+			}
+			final String name = this.plugin.getTeamName(player.getUniqueId());
+			if (name == null || name.isEmpty()) {
+				sender.sendMessage(CHAT_PREFIX + "Your team doesn't have a name");
+			} else {
+				sender.sendMessage(CHAT_PREFIX + "Your team name is: " + name);
+			}
+			return true;
+		}
 		if (num == 2) {
 			switch (args[0]) {
 			case "add": {
@@ -170,12 +184,11 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 					sender.sendMessage(LOG_PREFIX + "Console cannot use this command");
 					return true;
 				}
-				if (num > 1 && "all".equals(args[1])) {
+				if (num > 1 && ("all".equals(args[1]) || "teams".equals(args[1]))) {
 					if (!player.hasPermission("chunkprotect.team.list.all")) {
 						player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
 						return true;
 					}
-//TODO
 				} else {
 					if (!player.hasPermission("chunkprotect.team.list.own")) {
 						player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
@@ -191,9 +204,13 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 						msg.append(CHAT_PREFIX)
 							.append("Team leader: ")
 							.append(ownerName);
-						for (final String name : playerNames) {
-							msg.append("\n  ")
-								.append(name);
+						if (playerNames.length == 0) {
+							msg.append("\n  No players on your team");
+						} else {
+							for (final String name : playerNames) {
+								msg.append("\n  ")
+									.append(name);
+							}
 						}
 						sender.sendMessage(msg.toString());
 					}
@@ -203,20 +220,7 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 			default: break;
 			}
 		}
-		// team name
-		{
-			if (!player.hasPermission("chunkprotect.team.name")) {
-				player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
-				return true;
-			}
-			final String name = this.plugin.getTeamName(player.getUniqueId());
-			if (name == null || name.isEmpty()) {
-				sender.sendMessage(CHAT_PREFIX + "Your team doesn't have a name");
-			} else {
-				sender.sendMessage(CHAT_PREFIX + "Your team name is: " + name);
-			}
-		}
-		return true;
+		return false;
 	}
 
 
@@ -255,12 +259,12 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 		final int num = args.length;
 		switch (num) {
 		case 1:
-			if ("add".startsWith(   args[0])) result.add("add"   );
+			if ("add"   .startsWith(args[0])) result.add("add"   );
 			if ("remove".startsWith(args[0])) result.add("remove");
 			if ("join"  .startsWith(args[0])) result.add("join"  );
 			if ("accept".startsWith(args[0])) result.add("accept");
-			if ("name".startsWith(  args[0])) result.add("name"  );
-			if ("list".startsWith(  args[0])) result.add("list"  );
+			if ("name"  .startsWith(args[0])) result.add("name"  );
+			if ("list"  .startsWith(args[0])) result.add("list"  );
 			break;
 		case 2:
 			switch (args[0]) {
@@ -286,7 +290,8 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 						result.add(name);
 				}
 			case "list": {
-				if ("all".startsWith(args[1])) result.add("all");
+				if ("all"  .startsWith(args[1])) result.add("all"  );
+				if ("teams".startsWith(args[1])) result.add("teams");
 				break;
 			}
 			default: break;
