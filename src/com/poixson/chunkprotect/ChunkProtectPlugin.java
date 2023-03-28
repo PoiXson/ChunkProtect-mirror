@@ -20,10 +20,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -570,6 +572,29 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			team.isOnTeam(uuid);
 			if (team != null)
 				return team;
+		}
+		return null;
+	}
+	public TeamDAO findTeam(final String name) {
+		if (name == null || name.isEmpty())
+			return null;
+		// player name
+		for (final TeamDAO team : this.teams) {
+			if (team.matchName(name))
+				return team;
+		}
+		// team name
+		{
+			final OfflinePlayer player = Bukkit.getPlayer(name);
+			if (player != null) {
+				final UUID uuid = player.getUniqueId();
+				if (uuid != null) {
+					for (final TeamDAO team : this.teams) {
+						if (team.isTeamOwner(uuid))
+							return team;
+					}
+				}
+			}
 		}
 		return null;
 	}

@@ -37,11 +37,14 @@ public class TeamDAO {
 	public void addPlayer(final UUID uuid) {
 		this.teammates.add(uuid);
 	}
+	public boolean removePlayer(final UUID uuid) {
+		return this.teammates.remove(uuid);
+	}
 	public boolean isOnTeam(final UUID uuid) {
 		return this.teammates.contains(uuid);
 	}
-	public boolean removePlayer(final UUID uuid) {
-		return this.teammates.remove(uuid);
+	public boolean isTeamOwner(final UUID uuid) {
+		return this.owner.equals(uuid);
 	}
 
 
@@ -61,9 +64,19 @@ public class TeamDAO {
 		}
 		return list.toArray(new String[0]);
 	}
+	public boolean matchName(final String name) {
+		if (name == null || name.isEmpty())
+			return false;
+		return name.equals(this.name.get());
+	}
 
 
 
+	public void sendOwnerMessage(final String msg) {
+		final Player player = Bukkit.getPlayer(this.owner);
+		if (player != null)
+			player.sendMessage(msg);
+	}
 	public void sendTeamMessage(final String msg) {
 		for (final UUID uuid : this.teammates) {
 			final Player player = Bukkit.getPlayer(uuid);
