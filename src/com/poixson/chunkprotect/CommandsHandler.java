@@ -92,6 +92,45 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 				}
 				return true;
 			}
+			case "join": {
+				if (player == null) {
+					sender.sendMessage(LOG_PREFIX + "Console cannot use this command");
+					return true;
+				}
+				if (!player.hasPermission("chunkprotect.team.join")) {
+					player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
+					return true;
+				}
+				final TeamDAO team = this.plugin.findTeam(args[1]);
+				if (team == null) {
+					player.sendMessage(CHAT_PREFIX_RED + "Unknown team or player: " + args[1]);
+					return true;
+				}
+				if (team.isOnTeam(uuid)) {
+					player.sendMessage(CHAT_PREFIX_RED + "You are already on this team");
+					return true;
+				}
+				if (team.isTeamOwner(uuid)) {
+					player.sendMessage(CHAT_PREFIX_RED + "Can't join your own team");
+					return true;
+				}
+				final RequestJoinTeam request = new RequestJoinTeam(this.plugin, team, player);
+				this.plugin.register(request);
+				request.start();
+				return true;
+			}
+			case "accept": {
+				if (player == null) {
+					sender.sendMessage(LOG_PREFIX + "Console cannot use this command");
+					return true;
+				}
+				if (!player.hasPermission("chunkprotect.team.accept")) {
+					player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
+					return true;
+				}
+				this.plugin.acceptJoinRequest(player);
+				return true;
+			}
 			default: break;
 			}
 		}
@@ -218,6 +257,8 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 		case 1:
 			if ("add".startsWith(   args[0])) result.add("add"   );
 			if ("remove".startsWith(args[0])) result.add("remove");
+			if ("join"  .startsWith(args[0])) result.add("join"  );
+			if ("accept".startsWith(args[0])) result.add("accept");
 			if ("name".startsWith(  args[0])) result.add("name"  );
 			if ("list".startsWith(  args[0])) result.add("list"  );
 			break;
@@ -231,6 +272,19 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 						result.add(name);
 				}
 				break;
+			case "join":
+				for (final TeamDAO team : this.plugin.teams) {
+					final String name = team.getTeamName();
+					if (name != null) {
+						if (name.startsWith(args[1]))
+							result.add(name);
+					}
+				}
+				for (final Player p : Bukkit.getOnlinePlayers()) {
+					final String name = p.getName();
+					if (name.startsWith(args[1]))
+						result.add(name);
+				}
 			case "list": {
 				if ("all".startsWith(args[1])) result.add("all");
 				break;

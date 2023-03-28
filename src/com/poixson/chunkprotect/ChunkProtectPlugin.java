@@ -81,6 +81,8 @@ public class ChunkProtectPlugin extends JavaPlugin {
 
 	// teams
 	protected final CopyOnWriteArraySet<TeamDAO> teams = new CopyOnWriteArraySet<TeamDAO>();
+	// join team requests
+	protected final CopyOnWriteArraySet<RequestJoinTeam> requests = new CopyOnWriteArraySet<RequestJoinTeam>();
 
 
 
@@ -597,6 +599,22 @@ public class ChunkProtectPlugin extends JavaPlugin {
 			}
 		}
 		return null;
+	}
+
+
+
+	public void register(final RequestJoinTeam request) {
+		this.requests.add(request);
+	}
+	public boolean unregister(final RequestJoinTeam request) {
+		return this.requests.remove(request);
+	}
+	public boolean acceptJoinRequest(final Player owner) {
+		for (final RequestJoinTeam request : this.requests) {
+			if (request.isTeamOwner(owner))
+				return request.accept();
+		}
+		return false;
 	}
 
 

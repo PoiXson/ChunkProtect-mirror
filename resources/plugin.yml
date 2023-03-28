@@ -10,10 +10,10 @@ description: ${project.description}
 commands:
     team:
         description: "Allow other players to join your team"
-        usage: "/teams <name/add/remove/list>"
+        usage: "/teams <name/add/remove/join/list>"
     teams:
         description: "Allow other players to join your team"
-        usage: "/teams <name/add/remove/list>"
+        usage: "/teams <name/add/remove/join/list>"
 permission-message: "You don't have permission to use this command."
 permissions:
     chunkprotect.*:
@@ -28,6 +28,12 @@ permissions:
     chunkprotect.team.remove:
         default: true
         description: Gives access to /chunkprotect remove team command
+    chunkprotect.team.join:
+        default: true
+        description: Gives access to /chunkprotect join team command
+    chunkprotect.team.accept:
+        default: true
+        description: Gives access to /chunkprotect accept team command
     chunkprotect.team.name:
         default: true
         description: Gives access to /chunkprotect name team command
