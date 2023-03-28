@@ -1,11 +1,12 @@
 package com.poixson.chunkprotect.listeners;
 
+import static com.poixson.chunkprotect.ChunkProtectPlugin.CHAT_PREFIX;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -60,10 +61,10 @@ public class PlayerMoveListener implements Listener {
 				if (inSpawn != lastInSpawn) {
 					if (inSpawn) {
 						this.inspawn.add(uuid);
-						player.sendMessage(ChatColor.AQUA + "You've entered the spawn area");
+						player.sendMessage(CHAT_PREFIX + "You've entered the spawn area");
 					} else {
 						this.inspawn.remove(uuid);
-						player.sendMessage(ChatColor.AQUA + "You left the spawn area");
+						player.sendMessage(CHAT_PREFIX + "You left the spawn area");
 					}
 				}
 			}
@@ -83,12 +84,12 @@ public class PlayerMoveListener implements Listener {
 	protected void msgEnteredArea(final Player player, final BeaconDAO dao) {
 		// left area
 		if (dao == null) {
-			player.sendMessage(ChatColor.AQUA + "You left the protected area");
+			player.sendMessage(CHAT_PREFIX + "You left the protected area");
 			return;
 		}
 		// owner
 		if (dao.isOwner(player)) {
-			player.sendMessage(ChatColor.AQUA + "Welcome home");
+			player.sendMessage(CHAT_PREFIX + "Welcome home");
 			return;
 		}
 		// team
@@ -97,7 +98,7 @@ public class PlayerMoveListener implements Listener {
 			if (team != null) {
 				final String nameTeam = team.name.get();
 				if (nameTeam != null && !nameTeam.isEmpty()) {
-					player.sendMessage(ChatColor.AQUA + "You entered the area of team: " + nameTeam);
+					player.sendMessage(CHAT_PREFIX + "You entered the area of team: " + nameTeam);
 					return;
 				}
 			}
@@ -106,12 +107,12 @@ public class PlayerMoveListener implements Listener {
 		{
 			final String nameOwner = dao.getOwnerName();
 			if (nameOwner != null && !nameOwner.isEmpty()) {
-				player.sendMessage(ChatColor.AQUA + "You entered the area of: " + nameOwner);
+				player.sendMessage(CHAT_PREFIX + "You entered the area of: " + nameOwner);
 				return;
 			}
 		}
 		// generic
-		player.sendMessage(ChatColor.AQUA + "You entered a protected area");
+		player.sendMessage(CHAT_PREFIX + "You entered a protected area");
 	}
 
 

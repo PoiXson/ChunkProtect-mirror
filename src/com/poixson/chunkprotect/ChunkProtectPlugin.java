@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,6 +36,8 @@ import com.poixson.chunkprotect.listeners.ProtectedAreaHandler;
 public class ChunkProtectPlugin extends JavaPlugin {
 	public static final Logger LOG = Logger.getLogger("Minecraft");
 	public static final String LOG_PREFIX = "[ChunkProtect] ";
+	public static final String CHAT_PREFIX     = ChatColor.AQUA + "";
+	public static final String CHAT_PREFIX_RED = ChatColor.RED + "";
 
 //TODO: use arrays for layer block types and radius
 	public static final AreaShape DEFAULT_AREA_SHAPE = AreaShape.SQUARE;

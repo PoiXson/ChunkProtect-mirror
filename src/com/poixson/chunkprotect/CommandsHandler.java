@@ -1,12 +1,15 @@
 package com.poixson.chunkprotect;
 
+import static com.poixson.chunkprotect.ChunkProtectPlugin.CHAT_PREFIX;
+import static com.poixson.chunkprotect.ChunkProtectPlugin.CHAT_PREFIX_RED;
+import static com.poixson.chunkprotect.ChunkProtectPlugin.LOG_PREFIX;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -42,17 +45,17 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 			switch (args[0]) {
 			case "add": {
 				if (player == null) {
-					sender.sendMessage("Console cannot use this command");
+					sender.sendMessage(LOG_PREFIX + "Console cannot use this command");
 					return true;
 				}
 				if (!player.hasPermission("chunkprotect.team.add")) {
-					player.sendMessage(ChatColor.RED + MSG_NO_PERM);
+					player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
 					return true;
 				}
 				final TeamDAO team = this.plugin.getOwnTeam(uuid);
 				final Player p = Bukkit.getPlayer(args[1]);
 				if (p == null) {
-					sender.sendMessage(ChatColor.AQUA + "Unknown player: " + args[1]);
+					sender.sendMessage(CHAT_PREFIX_RED + "Unknown player: " + args[1]);
 					return true;
 				}
 				final UUID u = p.getUniqueId();
@@ -63,29 +66,29 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 				}
 				// add to team
 				team.addPlayer(u);
-				sender.sendMessage(ChatColor.AQUA + "Added player to your team: " + args[1]);
+				sender.sendMessage(CHAT_PREFIX + "Added player to your team: " + args[1]);
 				return true;
 			}
 			case "remove": {
 				if (player == null) {
-					sender.sendMessage("Console cannot use this command");
+					sender.sendMessage(LOG_PREFIX + "Console cannot use this command");
 					return true;
 				}
 				if (!player.hasPermission("chunkprotect.team.remove")) {
-					player.sendMessage(ChatColor.RED + MSG_NO_PERM);
+					player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
 					return true;
 				}
 				@SuppressWarnings("deprecation")
 				final OfflinePlayer p = Bukkit.getOfflinePlayer(args[1]);
 				if (p == null) {
-					sender.sendMessage(ChatColor.AQUA + "Player not found: " + args[1]);
+					sender.sendMessage(CHAT_PREFIX_RED + "Player not found: " + args[1]);
 					return true;
 				}
 				final TeamDAO team = this.plugin.getOwnTeam(uuid);
 				if (team.removePlayer(p.getUniqueId())) {
-					sender.sendMessage(ChatColor.AQUA + "Removed player from your team: " + args[1]);
+					sender.sendMessage(CHAT_PREFIX_RED + "Removed player from your team: " + args[1]);
 				} else {
-					sender.sendMessage(ChatColor.AQUA + "Player is not on your team: " + args[1]);
+					sender.sendMessage(CHAT_PREFIX_RED + "Player is not on your team: " + args[1]);
 				}
 				return true;
 			}
@@ -96,57 +99,58 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 			switch (args[0]) {
 			case "name": {
 				if (player == null) {
-					sender.sendMessage("Console cannot use this command");
+					sender.sendMessage(LOG_PREFIX + "Console cannot use this command");
 					return true;
 				}
 				if (num > 1) {
 					if (!player.hasPermission("chunkprotect.team.name.change")) {
-						player.sendMessage(ChatColor.RED + MSG_NO_PERM);
+						player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
 						return true;
 					}
 					final TeamDAO team = this.plugin.getOwnTeam(uuid);
 					final String name = args[1].trim();
 					if (!name.isEmpty()) {
 						team.setTeamName(name);
-						sender.sendMessage(ChatColor.AQUA + "Your team name is changed to: " + name);
+						sender.sendMessage(CHAT_PREFIX + "Your team name is changed to: " + name);
 					}
 				} else {
 					if (!player.hasPermission("chunkprotect.team.name")) {
-						player.sendMessage(ChatColor.RED + MSG_NO_PERM);
+						player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
 						return true;
 					}
 					final TeamDAO team = this.plugin.getOwnTeam(uuid);
 					final String name = team.getTeamName();
 					if (name != null && !name.isEmpty()) {
-						sender.sendMessage(ChatColor.AQUA + "Your team name is: " + name);
+						sender.sendMessage(CHAT_PREFIX + "Your team name is: " + name);
 					}
 				}
 				return true;
 			}
 			case "list": {
 				if (player == null) {
-					sender.sendMessage("Console cannot use this command");
+					sender.sendMessage(LOG_PREFIX + "Console cannot use this command");
 					return true;
 				}
 				if (num > 1 && "all".equals(args[1])) {
 					if (!player.hasPermission("chunkprotect.team.list.all")) {
-						player.sendMessage(ChatColor.RED + MSG_NO_PERM);
+						player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
 						return true;
 					}
 //TODO
 				} else {
 					if (!player.hasPermission("chunkprotect.team.list.own")) {
-						player.sendMessage(ChatColor.RED + MSG_NO_PERM);
+						player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
 						return true;
 					}
 					final TeamDAO team = this.plugin.findTeam(uuid);
 					if (team == null) {
-						sender.sendMessage(ChatColor.AQUA + "You're not on a team");
+						sender.sendMessage(CHAT_PREFIX_RED + "You're not on a team");
 					} else {
 						final String ownerName = team.getOwnerName();
 						final String[] playerNames = team.getTeamPlayerNames();
 						final StringBuilder msg = new StringBuilder();
-						msg.append("Team leader: ")
+						msg.append(CHAT_PREFIX)
+							.append("Team leader: ")
 							.append(ownerName);
 						for (final String name : playerNames) {
 							msg.append("\n  ")
@@ -163,14 +167,14 @@ public class CommandsHandler implements CommandExecutor, TabCompleter {
 		// team name
 		{
 			if (!player.hasPermission("chunkprotect.team.name")) {
-				player.sendMessage(ChatColor.RED + MSG_NO_PERM);
+				player.sendMessage(CHAT_PREFIX_RED + MSG_NO_PERM);
 				return true;
 			}
 			final String name = this.plugin.getTeamName(player.getUniqueId());
 			if (name == null || name.isEmpty()) {
-				sender.sendMessage(ChatColor.AQUA + "Your team doesn't have a name");
+				sender.sendMessage(CHAT_PREFIX + "Your team doesn't have a name");
 			} else {
-				sender.sendMessage(ChatColor.AQUA + "Your team name is: " + name);
+				sender.sendMessage(CHAT_PREFIX + "Your team name is: " + name);
 			}
 		}
 		return true;

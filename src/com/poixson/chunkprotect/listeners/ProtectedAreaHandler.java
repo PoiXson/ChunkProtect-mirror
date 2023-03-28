@@ -1,9 +1,10 @@
 package com.poixson.chunkprotect.listeners;
 
+import static com.poixson.chunkprotect.ChunkProtectPlugin.CHAT_PREFIX_RED;
+
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -64,13 +65,13 @@ public class ProtectedAreaHandler implements Listener {
 			// place beacon
 			if (placebreak) {
 				if (this.plugin.isSpawnAreaNear(loc)) {
-					player.sendMessage(ChatColor.RED + "Can't place a beacon in the spawn area");
+					player.sendMessage(CHAT_PREFIX_RED + "Can't place a beacon in the spawn area");
 					return true;
 				}
 				// check protected area
 				final BeaconDAO dao = this.plugin.getBeaconNear(loc);
 				if (dao != null) {
-					player.sendMessage(ChatColor.RED + "Can't place a beacon here");
+					player.sendMessage(CHAT_PREFIX_RED + "Can't place a beacon here");
 					return true;
 				}
 			// break beacon
@@ -78,14 +79,14 @@ public class ProtectedAreaHandler implements Listener {
 				final BeaconDAO dao = this.plugin.getBeaconDAO(loc);
 				if (dao == null)
 					return false;
-				dao.sendOwnerMessage(ChatColor.RED + "Your beacon has been broken!\nThe area is now unprotected!");
+				dao.sendOwnerMessage(CHAT_PREFIX_RED + "Your beacon has been broken!\nThe area is now unprotected!");
 				{
 					final TeamDAO team = this.plugin.getOwnTeam(dao.owner);
 					if (team != null)
-						team.sendTeamMessage(ChatColor.RED + "Your team beacon has been broken!\nThe area is now unprotected!");
+						team.sendTeamMessage(CHAT_PREFIX_RED + "Your team beacon has been broken!\nThe area is now unprotected!");
 				}
 				if (!dao.isOwner(player))
-					player.sendMessage(ChatColor.RED + "Area protection broken!");
+					player.sendMessage(CHAT_PREFIX_RED + "Area protection broken!");
 			}
 			return false;
 		}
@@ -97,7 +98,7 @@ public class ProtectedAreaHandler implements Listener {
 				if (!Utils.EqualsUUID(dao.owner, uuid)) {
 					final TeamDAO team = this.plugin.findTeam(uuid);
 					if (!team.isOnTeam(uuid)) {
-						player.sendMessage(ChatColor.RED + "You cannot build here");
+						player.sendMessage(CHAT_PREFIX_RED + "You cannot build here");
 						return true;
 					}
 				}
