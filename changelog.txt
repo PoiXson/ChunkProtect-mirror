@@ -1,6 +1,12 @@
 ChunkProtect - Claim protected chunks with a beacon
 
 
+2023-03-31 - 0.1.22
+===================
+* added permissions
+* added /team join and /team accept commands
+
+
 2023-03-02 - 0.1.19
 ===================
 * added solid/layered beacons to config.yml
